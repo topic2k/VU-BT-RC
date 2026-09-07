@@ -1,0 +1,12 @@
+{
+  "domain": "vuplus_hid_raw",
+  "name": "VU+ HID Raw Remote",
+  "codeowners": ["@topic2k"],
+  "config_flow": true,
+  "documentation": "https://github.com/topic2k/VU-BT-RC",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/topic2k/VU-BT-RC/issues",
+  "requirements": ["evdev==1.9.3", "dbus-fast==5.0.22"],
+  "version": "1.0.0"
+}

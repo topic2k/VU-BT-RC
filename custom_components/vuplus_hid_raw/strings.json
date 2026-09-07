@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "device": {
+        "title": "VU+ Bluetooth-Fernbedienung",
+        "description": "Wähle das verbundene Linux-Eingabegerät. Falls es fehlt, wecke die Fernbedienung auf und sende das Formular erneut ab, um die Liste zu aktualisieren. Nach dem Löschen des Integrationseintrags kannst du unter Reparaturen entscheiden, ob auch die Bluetooth-Kopplung gelöscht werden soll.",
+        "data": {
+          "device_name": "Linux-Gerätename",
+          "long_press_ms": "Langdruck-Schwelle (ms)"
+        }
+      },
+      "user": {
+        "title": "VU+ Bluetooth-Fernbedienung",
+        "description": "Wähle, ob die Fernbedienung bereits verbunden ist oder zunächst gekoppelt werden soll.",
+        "menu_options": {
+          "device": "Bereits verbundenes Eingabegerät auswählen",
+          "bluetooth": "Bluetooth-Fernbedienung koppeln"
+        }
+      },
+      "bluetooth": {
+        "title": "Bluetooth-Fernbedienung koppeln",
+        "description": "Versetze die VU+-Fernbedienung gemäß ihrer Anleitung in den Kopplungsmodus und starte die Suche (etwa 10 Sekunden). Ein eingeschalteter lokaler Bluetooth-Adapter ist erforderlich; Bluetooth-Proxies werden nicht unterstützt. Nach der Auswahl wird die Fernbedienung gekoppelt, dauerhaft als vertrauenswürdig markiert und verbunden. Beim späteren Löschen des Integrationseintrags bleibt die Kopplung erhalten, bis du das zusätzliche Entkoppeln unter Reparaturen ausdrücklich bestätigst."
+      },
+      "select_remote": {
+        "title": "Fernbedienung auswählen",
+        "description": "Prüfe Bluetooth-Adresse und Adapter. Mit dem Absenden wird diese Fernbedienung gekoppelt, als vertrauenswürdig markiert und verbunden. Halte sie währenddessen wach. Bestehende Kopplungen werden wiederverwendet. Beim späteren Löschen des Integrationseintrags bleibt die Kopplung erhalten, bis du das zusätzliche Entkoppeln unter Reparaturen ausdrücklich bestätigst.",
+        "data": {
+          "remote": "VU+-Fernbedienung"
+        }
+      },
+      "device_missing": {
+        "title": "Auf Eingabegerät warten",
+        "description": "Linux stellt noch kein lesbares Eingabegerät bereit. Wecke die verbundene Fernbedienung auf. Sende dieses Formular ab, um die Geräteliste erneut zu laden. Falls weiterhin kein Gerät erscheint, prüfe den Zugriff von Home Assistant auf /dev/input."
+      }
+    },
+    "error": {
+      "device_not_found": "Das Eingabegerät wurde nicht gefunden.",
+      "evdev_missing": "python-evdev ist nicht verfügbar.",
+      "unknown": "Unbekannter Fehler.",
+      "bluetooth_unavailable": "BlueZ oder der System-D-Bus ist nicht erreichbar. Prüfe Bluetooth und den D-Bus-Zugang des Home-Assistant-Hosts.",
+      "bluetooth_permission": "Keine Berechtigung für den Bluetooth-Zugriff. Prüfe die D-Bus-Berechtigungen des Home-Assistant-Prozesses.",
+      "bluetooth_no_adapter": "Kein lokaler Bluetooth-Adapter gefunden. Ein Bluetooth-Proxy reicht für evdev nicht aus.",
+      "bluetooth_adapter_off": "Der lokale Bluetooth-Adapter ist ausgeschaltet oder nicht bereit. Aktiviere ihn und versuche es erneut.",
+      "bluetooth_no_devices": "Keine VUPLUS-BLE-RCU gefunden. Versetze die Fernbedienung in den Kopplungsmodus und starte erneut.",
+      "bluetooth_device_gone": "Die ausgewählte Fernbedienung ist nicht mehr verfügbar. Starte die Suche erneut.",
+      "bluetooth_timeout": "Zeitüberschreitung beim Bluetooth-Zugriff. Wecke die Fernbedienung auf oder aktiviere erneut den Kopplungsmodus und versuche es noch einmal.",
+      "bluetooth_authentication": "Die Kopplung wurde abgelehnt oder ist fehlgeschlagen. Aktiviere den Kopplungsmodus und versuche es erneut.",
+      "bluetooth_pin_required": "Das Gerät verlangt eine PIN oder einen Zahlenvergleich. Kopple es mit bluetoothctl und wähle danach den Einrichtungsweg für bereits verbundene Eingabegeräte.",
+      "bluetooth_failed": "Bluetooth-Einrichtung fehlgeschlagen. Prüfe das Home-Assistant-Protokoll und versuche es erneut. Eine bereits erfolgte Kopplung bleibt erhalten."
+    },
+    "abort": {
+      "already_configured": "Diese Fernbedienung ist bereits eingerichtet."
+    },
+    "progress": {
+      "scan": "Lokale VU+-Fernbedienungen werden gesucht …",
+      "pair": "Fernbedienung wird gekoppelt, als vertrauenswürdig markiert und verbunden. Dies kann etwa eine Minute dauern …"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "VU+ Fernbedienung",
+        "data": {
+          "long_press_ms": "Langdruck-Schwelle (ms)"
+        }
+      }
+    }
+  },
+  "issues": {
+    "confirm_unpair": {
+      "title": "Auch die Bluetooth-Kopplung löschen?",
+      "description": "Der Integrationseintrag {name} wurde gelöscht. Die Bluetooth-Kopplung ist erhalten geblieben. Öffne diese Rückfrage, um zu entscheiden: nur Gerät/Integration löschen oder auch die Bluetooth-Kopplung löschen. Ohne deine ausdrückliche Bestätigung wird nicht entkoppelt.",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Auch die Kopplung löschen oder nur Gerät/Integration?",
+            "description": "Der Integrationseintrag ist bereits gelöscht. Die Bluetooth-Kopplung besteht weiterhin.\n\nFernbedienung: {address}\n\nAdapter: {adapter}\n\nWähle „Auch die Bluetooth-Kopplung löschen“ und bestätige, um die Verbindung, Kopplung und das Vertrauen auf dem HA-Host zu entfernen. Für eine erneute Nutzung musst du die Fernbedienung wieder koppeln. Mit „Nur Gerät/Integration löschen“ bleibt die Kopplung erhalten und die Rückfrage wird geschlossen.",
+            "data": {
+              "action": "Was möchtest du löschen?"
+            }
+          }
+        },
+        "progress": {
+          "unpair": "Die bestätigte Bluetooth-Kopplung wird entfernt …"
+        },
+        "error": {
+          "bluetooth_identity_missing": "Die Bluetooth-Kopplung ist nicht eindeutig bekannt. Es wurde nichts entfernt. Behalte die Kopplung oder entferne sie bei Bedarf manuell mit bluetoothctl auf dem richtigen Adapter.",
+          "bluetooth_still_in_use": "Die Fernbedienung wird inzwischen von einem anderen oder neu angelegten Integrationseintrag verwendet. Die Kopplung wird deshalb beibehalten.",
+          "bluetooth_no_adapter": "Der ursprüngliche lokale Bluetooth-Adapter ist nicht verfügbar. Verbinde ihn erneut und bestätige einen neuen Versuch, oder behalte die Kopplung.",
+          "bluetooth_permission": "Home Assistant hat keine Berechtigung zum Entkoppeln. Prüfe die D-Bus-Berechtigungen oder behalte die Kopplung.",
+          "bluetooth_timeout": "Zeitüberschreitung: Das Entkoppeln konnte nicht bestätigt werden. Prüfe Bluetooth und bestätige bei Bedarf einen neuen Versuch.",
+          "bluetooth_unavailable": "BlueZ oder der System-D-Bus ist nicht erreichbar. Prüfe Bluetooth auf dem HA-Host oder behalte die Kopplung.",
+          "bluetooth_adapter_off": "Der Bluetooth-Adapter ist nicht bereit. Prüfe den Adapter oder behalte die Kopplung.",
+          "bluetooth_failed": "Das Entkoppeln konnte nicht bestätigt werden. Prüfe Bluetooth auf dem HA-Host und bestätige bei Bedarf einen neuen Versuch."
+        }
+      }
+    }
+  }
+}
