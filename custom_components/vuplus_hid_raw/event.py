@@ -41,12 +41,12 @@ class VuplusRemoteButtonEvent(EventEntity):
         self._state = state
         self._command = command
         self._attr_unique_id = f"{state['entry'].entry_id}_{command}_button_events"
-        self._attr_name = COMMAND_LABELS[command]
+        self._attr_translation_key = command
         self._attr_device_info = DeviceInfo(
             identifiers={
                 (DOMAIN, state["entry"].unique_id or state["entry"].entry_id)
             },
-            name="VU+ Bluetooth-Fernbedienung",
+            translation_key="remote",
             manufacturer="VU+",
             model="VUPLUS-BLE-RCU",
             model_id="VUPLUS-BLE-RCU",
@@ -70,7 +70,11 @@ class VuplusRemoteButtonEvent(EventEntity):
             return
 
         if event_type := EVENT_TYPE_BY_ACTION.get(data["action"]):
-            self._trigger_event(event_type, data)
+            event_data = {
+                **data,
+                "command_label": self.name or data.get("command_label", self._command),
+            }
+            self._trigger_event(event_type, event_data)
             self.async_write_ha_state()
 
 

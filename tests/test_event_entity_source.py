@@ -18,6 +18,11 @@ def _install_home_assistant_stubs() -> None:
     binary_sensor_component = types.ModuleType("homeassistant.components.binary_sensor")
 
     class EventEntity:
+        @property
+        def name(self):
+            # Home Assistant resolves entity translations; tests can supply that result.
+            return getattr(self, "_test_name", None)
+
         def _trigger_event(self, event_type, data) -> None:
             self.triggered = (event_type, data)
 
@@ -159,11 +164,11 @@ class EventEntitySourceTest(unittest.TestCase):
         entity = event_platform.VuplusRemoteButtonEvent(state, "ok")
 
         self.assertEqual("entry-123_ok_button_events", entity._attr_unique_id)
-        self.assertEqual("OK", entity._attr_name)
+        self.assertEqual("ok", entity._attr_translation_key)
         self.assertEqual(
             {
                 "identifiers": {(integration.DOMAIN, "entry-123")},
-                "name": "VU+ Bluetooth-Fernbedienung",
+                "translation_key": "remote",
                 "manufacturer": "VU+",
                 "model": "VUPLUS-BLE-RCU",
                 "model_id": "VUPLUS-BLE-RCU",
@@ -178,7 +183,7 @@ class EventEntitySourceTest(unittest.TestCase):
         entity._handle({"command": "menu", "action": "short_release"})
         self.assertFalse(hasattr(entity, "triggered"))
 
-        data = {"command": "ok", "action": "short_release"}
+        data = {"command": "ok", "command_label": "OK", "action": "short_release"}
         entity._handle(data)
         self.assertEqual(("press_end", data), entity.triggered)
         self.assertTrue(entity.written)

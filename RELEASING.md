@@ -7,6 +7,8 @@
 - [Release veröffentlichen](#release-veröffentlichen)
 - [HACS](#hacs)
 
+[Deutsch](RELEASING.md) | [English](RELEASING.en.md)
+
 ## Repository
 
 Das Projekt ist für [topic2k/VU-BT-RC](https://github.com/topic2k/VU-BT-RC)
@@ -49,13 +51,16 @@ und der Git-Tag übereinstimmen. Für die Erstveröffentlichung lautet die Versi
 
 Der Workflow `.github/workflows/validate.yml` prüft auf GitHub die Tests,
 Python-Syntax, Home-Assistant-Metadaten mit Hassfest und HACS-Anforderungen.
+Die Tests prüfen außerdem identische Übersetzungsschlüssel und Platzhalter,
+übersetzbare Entitäts- und Auswahlnamen sowie die Dokumentationsverweise.
+Alle Dokumentationsänderungen werden gleichzeitig in Deutsch und Englisch gepflegt.
 Die vollständige HACS-Prüfung benötigt das öffentliche GitHub-Repository samt
 Beschreibung, Topics und aktivierten Issues.
 
 Zusätzlich auf der Zielplattform Home Assistant OS / Raspberry Pi / aarch64
 prüfen: frische Installation, Bluetooth-Kopplung, alle unterstützten Tasten,
 Kurz- und Langdruck, Wiederverbindung, Diagnoseanzeigen und beide Entscheidungen
-im Reparaturdialog nach dem Löschen. Automatisierte Tests mit simuliertem
+im Reparaturdialog nach dem Löschen, jeweils mit deutscher und englischer Spracheinstellung. Automatisierte Tests mit simuliertem
 Home Assistant und BlueZ ersetzen diesen Hardwaretest nicht.
 
 ## Release veröffentlichen
@@ -76,7 +81,8 @@ Home Assistant und BlueZ ersetzen diesen Hardwaretest nicht.
    ```
 
 5. Auf GitHub ein Release zum Tag `v1.0.0` mit dem Titel `1.0.0` erstellen.
-   Den Abschnitt `1.0.0` aus `CHANGELOG.md` als Beschreibung verwenden und als
+   Die Abschnitte `1.0.0` aus `CHANGELOG.md` und `CHANGELOG.en.md` als
+   zweisprachige Beschreibung verwenden und als
    reguläres Release veröffentlichen.
 
 Es ist kein zusätzliches ZIP-Release-Asset erforderlich. HACS verwendet den

@@ -9,13 +9,7 @@ from homeassistant.helpers.entity import DeviceInfo
 
 from . import DOMAIN, INTEGRATION_VERSION, _register_diagnostic_callback
 
-DIAGNOSTICS = {
-    "paired": "Gekoppelt",
-    "connected": "Bluetooth verbunden",
-    "trusted": "Vertrauenswürdig",
-    "input_device": "Eingabegerät verfügbar",
-    "reader_active": "Eingabe wird gelesen",
-}
+DIAGNOSTICS = ("paired", "connected", "trusted", "input_device", "reader_active")
 
 
 class VuplusRemoteDiagnostic(BinarySensorEntity):
@@ -30,10 +24,10 @@ class VuplusRemoteDiagnostic(BinarySensorEntity):
         self._key = key
         self._remove = None
         self._attr_unique_id = f"{state['entry'].entry_id}_{key}_diagnostic"
-        self._attr_name = DIAGNOSTICS[key]
+        self._attr_translation_key = key
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, state["entry"].unique_id or state["entry"].entry_id)},
-            name="VU+ Bluetooth-Fernbedienung",
+            translation_key="remote",
             manufacturer="VU+",
             model="VUPLUS-BLE-RCU",
             model_id="VUPLUS-BLE-RCU",

@@ -204,7 +204,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     if identity:
                         data[CONF_BLUETOOTH_DEVICE] = identity
                     return self.async_create_entry(
-                        title="VU+ Bluetooth Fernbedienung", data=data
+                        title="VUPLUS-BLE-RCU", data=data
                     )
 
         if not device_options:

@@ -12,6 +12,8 @@
 - [Hinweise zur Home-Assistant-Integration](#hinweise-zur-home-assistant-integration)
 - [Quellen](#quellen)
 
+[Deutsch](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.md) | [English](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.md)
+
 ## Geltungsbereich und Schreibweise
 
 Diese Anleitung gilt für die VU+ **BT/IR-Fernbedienung** (Typ V) mit dem

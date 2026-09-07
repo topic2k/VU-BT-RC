@@ -1,5 +1,7 @@
 # AGENTS.md
 
+[Deutsch](AGENTS.md) | [English](AGENTS.en.md)
+
 ## Projekt
 
 Dies ist eine Home-Assistant-Custom-Integration zur Anbindung der VU+ Bluetooth-Fernbedienung VUPLUS-BLE-RCU über Linux evdev.
@@ -44,6 +46,22 @@ Die Integration soll sich möglichst vollständig in Home Assistant integrieren:
 
 TV Power und AV erzeugen auf der aktuell verwendeten Linux-evdev-Schnittstelle kein Event. Diese Tasten dürfen daher nicht einfach als funktionierend implementiert oder dokumentiert werden.
 
+## Sprache / Language
+
+- Integration und Dokumentation werden immer vollständig auf Deutsch und Englisch gepflegt.
+- `strings.json` enthält die englischen Quelltexte. `translations/en.json` und
+  `translations/de.json` enthalten dieselben Schlüssel und Platzhalter.
+- Alle Oberflächentexte, Geräte- und Entitätsnamen sowie feste Auswahloptionen
+  verwenden Home Assistants Übersetzungsmechanismus. Technische Kennungen bleiben
+  sprachunabhängig; keine fest eingebauten deutschen Oberflächentexte im Python-Code.
+- Deutsche Dokumentation liegt in `*.md`, die zugehörige englische Fassung in
+  `*.en.md`. Beide Fassungen verlinken einander und werden im selben Arbeitsschritt
+  aktualisiert. Dies gilt auch für Changelog, Release-Anleitung und Projektvorgaben.
+- `LICENSE` enthält den maßgeblichen englischen MIT-Lizenztext;
+  `LICENSE.de.md` enthält eine als solche gekennzeichnete deutsche Übersetzung.
+- Neue Funktionen sind erst vollständig, wenn beide Sprachen und ihre Prüfungen
+  aktualisiert sind.
+
 ## Dokumentation
 
 README.md enthält ausschließlich die aktuelle technische Dokumentation.
@@ -63,6 +81,10 @@ README.md:
 
 ## Versionierung
 
+Bis zur ersten Veröffentlichung gehören Ergänzungen zur Version 1.0.0; der
+Erstveröffentlichungseintrag wird in beiden Changelog-Fassungen aktualisiert.
+Nach der ersten Veröffentlichung gilt:
+
 Bei einer nutzerrelevanten Änderung Version in manifest.json erhöhen und CHANGELOG.md ergänzen. Keine künstlichen Release-Versionen für reine interne Kleinständerungen erzeugen.
 Reine Dokumentationsänderungen erhöhen ausschließlich die Patch-Version der Integration.
 
@@ -77,5 +99,5 @@ Nach Änderungen:
 1. Tests ausführen.
 2. Python-Syntax prüfen.
 3. Home-Assistant-Kompatibilität prüfen, soweit lokal möglich.
-4. README.md und CHANGELOG.md aktualisieren.
+4. Betroffene Dokumentationen und Changelogs in beiden Sprachen aktualisieren.
 5. Keine ZIP-Datei erzeugen, sofern nicht ausdrücklich verlangt.

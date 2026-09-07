@@ -4,6 +4,7 @@
 
 - [Überblick](#überblick)
 - [Voraussetzungen und Berechtigungen](#voraussetzungen-und-berechtigungen)
+- [Sprachen](#sprachen)
 - [Installation](#installation)
 - [Funktionsumfang](#funktionsumfang)
 - [Geräteinformationen](#geräteinformationen)
@@ -20,6 +21,8 @@
 - [Bekannte Einschränkungen](#bekannte-einschränkungen)
 - [Entwicklung](#entwicklung)
 - [Lizenz](#lizenz)
+
+[Deutsch](README.md) | [English](README.en.md)
 
 ## Überblick
 
@@ -49,6 +52,21 @@ Laufzeitumgebung durchgereicht sein und der Prozess die entsprechenden
 Leseberechtigungen besitzen, typischerweise über die Gruppe `input` oder eine
 passende udev-Regel. Fehlt der Zugriff, ist das Gerät im Config-Flow-Dropdown nicht
 sichtbar oder kann nach der Einrichtung nicht geöffnet werden.
+
+## Sprachen
+
+Einrichtung, Optionen, Reparaturdialoge sowie Geräte-, Tasten- und Diagnosenamen
+stehen auf Deutsch und Englisch zur Verfügung. Home Assistant wählt die
+Übersetzungen anhand seiner Spracheinstellungen; vom Backend erzeugte Namen
+richten sich nach der Systemsprache. Selbst vergebene Namen bleiben erhalten.
+Bereits erzeugte Entity-IDs ändern sich durch einen Sprachwechsel nicht automatisch.
+Der Integrationseintrag verwendet die sprachneutrale Modellkennung `VUPLUS-BLE-RCU`.
+
+Technische Werte wie `command`, `action` und `event_type` sind in beiden Sprachen
+identisch. `command_label` enthält den von Home Assistant ermittelten Namen der
+Tasten-Entität. Für Filter und Vergleiche die technischen Werte verwenden.
+
+Alle Anleitungen sind über die Sprachlinks in Deutsch und Englisch erreichbar.
 
 ## Installation
 
@@ -276,8 +294,8 @@ actions:
 mode: single
 ```
 
-Die Entity-ID kann abweichen, wenn das Gerät in Home Assistant anders benannt
-wurde. In diesem Fall im Beispiel `event.vu_bluetooth_fernbedienung_ok` durch die
+Die Entity-ID kann je nach Systemsprache bei der Einrichtung und eigener
+Benennung abweichen. In diesem Fall im Beispiel `event.vu_bluetooth_fernbedienung_ok` durch die
 Entity-ID der eigenen Entität **OK** ersetzen.
 
 ## Kurz- und Langdruck
@@ -380,4 +398,5 @@ Die Versionshistorie steht ausschließlich in [CHANGELOG.md](CHANGELOG.md).
 
 ## Lizenz
 
-Das Projekt steht unter der [MIT-Lizenz](LICENSE).
+Das Projekt steht unter der [MIT-Lizenz](LICENSE). Eine
+[deutsche Übersetzung](LICENSE.de.md) ist zur Orientierung verfügbar.

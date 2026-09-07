@@ -69,12 +69,11 @@
   "issues": {
     "confirm_unpair": {
       "title": "Auch die Bluetooth-Kopplung löschen?",
-      "description": "Der Integrationseintrag {name} wurde gelöscht. Die Bluetooth-Kopplung ist erhalten geblieben. Öffne diese Rückfrage, um zu entscheiden: nur Gerät/Integration löschen oder auch die Bluetooth-Kopplung löschen. Ohne deine ausdrückliche Bestätigung wird nicht entkoppelt.",
       "fix_flow": {
         "step": {
           "confirm": {
             "title": "Auch die Kopplung löschen oder nur Gerät/Integration?",
-            "description": "Der Integrationseintrag ist bereits gelöscht. Die Bluetooth-Kopplung besteht weiterhin.\n\nFernbedienung: {address}\n\nAdapter: {adapter}\n\nWähle „Auch die Bluetooth-Kopplung löschen“ und bestätige, um die Verbindung, Kopplung und das Vertrauen auf dem HA-Host zu entfernen. Für eine erneute Nutzung musst du die Fernbedienung wieder koppeln. Mit „Nur Gerät/Integration löschen“ bleibt die Kopplung erhalten und die Rückfrage wird geschlossen.",
+            "description": "Der Integrationseintrag ist bereits gelöscht. Die Bluetooth-Kopplung besteht weiterhin.\n\nFernbedienung: {address}\n\nAdapter: {adapter}\n\nWähle „Auch die Bluetooth-Kopplung löschen“ und bestätige, um die Verbindung, Kopplung und das Vertrauen auf dem HA-Host zu entfernen. Für eine erneute Nutzung musst du die Fernbedienung wieder koppeln. Mit „Nur Gerät/Integration löschen“ bleibt die Kopplung erhalten und die Rückfrage wird geschlossen. Ein Gedankenstrich (—) bedeutet, dass die Adresse nicht eindeutig ermittelt werden konnte.",
             "data": {
               "action": "Was möchtest du löschen?"
             }
@@ -93,6 +92,656 @@
           "bluetooth_adapter_off": "Der Bluetooth-Adapter ist nicht bereit. Prüfe den Adapter oder behalte die Kopplung.",
           "bluetooth_failed": "Das Entkoppeln konnte nicht bestätigt werden. Prüfe Bluetooth auf dem HA-Host und bestätige bei Bedarf einen neuen Versuch."
         }
+      }
+    }
+  },
+  "device": {
+    "remote": {
+      "name": "VU+ Bluetooth-Fernbedienung"
+    }
+  },
+  "selector": {
+    "unpair_action": {
+      "options": {
+        "keep": "Nur Gerät/Integration löschen – Kopplung behalten",
+        "delete": "Auch die Bluetooth-Kopplung löschen"
+      }
+    }
+  },
+  "entity": {
+    "event": {
+      "ok": {
+        "name": "OK",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "up": {
+        "name": "Pfeil hoch",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "down": {
+        "name": "Pfeil runter",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "left": {
+        "name": "Pfeil links",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "right": {
+        "name": "Pfeil rechts",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "volume_up": {
+        "name": "Lautstärke +",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "volume_down": {
+        "name": "Lautstärke -",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "channel_up": {
+        "name": "Kanal +",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "channel_down": {
+        "name": "Kanal -",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "menu": {
+        "name": "Menü",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "pvr": {
+        "name": "PVR",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "mute": {
+        "name": "Stumm",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "rewind": {
+        "name": "Zurückspulen",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "forward": {
+        "name": "Vorspulen",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "play": {
+        "name": "Play",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "pause": {
+        "name": "Pause",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "record": {
+        "name": "Aufnahme",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "stop": {
+        "name": "Stop",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "radio": {
+        "name": "Radio",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "help": {
+        "name": "Hilfe",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "stb_power": {
+        "name": "STB Power",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "red": {
+        "name": "Rot",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "green": {
+        "name": "Grün",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "yellow": {
+        "name": "Gelb",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "blue": {
+        "name": "Blau",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "0": {
+        "name": "0",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "1": {
+        "name": "1",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "2": {
+        "name": "2",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "3": {
+        "name": "3",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "4": {
+        "name": "4",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "5": {
+        "name": "5",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "6": {
+        "name": "6",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "7": {
+        "name": "7",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "8": {
+        "name": "8",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "9": {
+        "name": "9",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "epg": {
+        "name": "EPG",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "audio": {
+        "name": "Audio",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "teletext": {
+        "name": "Teletext",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "subtitle": {
+        "name": "Untertitel",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "speak": {
+        "name": "Sprechen",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "tv": {
+        "name": "TV",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "exit": {
+        "name": "Exit",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "left_0": {
+        "name": "Links neben 0",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      },
+      "right_0": {
+        "name": "Rechts neben 0",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press_start": "Gedrückt",
+              "press_end": "Nach kurzem Druck losgelassen",
+              "long_press_start": "Langdruck begonnen",
+              "long_press_end": "Nach langem Druck losgelassen",
+              "repeat": "Wiederholt"
+            }
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "paired": {
+        "name": "Gekoppelt"
+      },
+      "connected": {
+        "name": "Bluetooth verbunden"
+      },
+      "trusted": {
+        "name": "Vertrauenswürdig"
+      },
+      "input_device": {
+        "name": "Eingabegerät verfügbar"
+      },
+      "reader_active": {
+        "name": "Eingabe wird gelesen"
       }
     }
   }

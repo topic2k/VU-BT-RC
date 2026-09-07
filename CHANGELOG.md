@@ -4,6 +4,8 @@
 
 - [1.0.0](#100)
 
+[Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+
 ## 1.0.0
 
 Erstveröffentlichung der Home-Assistant-Integration **VU+ HID Raw Remote**.
@@ -23,6 +25,8 @@ Erstveröffentlichung der Home-Assistant-Integration **VU+ HID Raw Remote**.
   Kopplung, Bluetooth-Verbindung, Vertrauen, Eingabegerät und Reader-Zustand.
 - Optionale Entkopplung über einen bestätigten Reparaturdialog nach dem Löschen
   des Integrationseintrags.
+- Deutsche und englische Oberfläche einschließlich Geräte- und Entitätsnamen,
+  Reparaturauswahl und vollständig zweisprachiger Dokumentation.
 - HACS-Repositorystruktur, Installationsanleitung, Fernbedienungsanleitung und
   automatische Prüfungen für Python, Home Assistant und HACS.
 

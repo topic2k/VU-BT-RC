@@ -46,18 +46,16 @@ class UnpairRepairFlow(RepairsFlow):
             data_schema=vol.Schema({
                 vol.Required("action", default="keep"): selector.SelectSelector(
                     selector.SelectSelectorConfig(
-                        options=[
-                            {"value": "keep", "label": "Nur Gerät/Integration löschen – Kopplung behalten"},
-                            {"value": "delete", "label": "Auch die Bluetooth-Kopplung löschen"},
-                        ],
+                        options=["keep", "delete"],
+                        translation_key="unpair_action",
                         mode=selector.SelectSelectorMode.DROPDOWN,
                     )
                 ),
             }),
             errors={"base": self._error} if self._error else {},
             description_placeholders={
-                "address": normalize_address(data.get("address")) or "nicht eindeutig bekannt",
-                "adapter": normalize_address(data.get("adapter_address")) or "nicht eindeutig bekannt",
+                "address": normalize_address(data.get("address")) or "—",
+                "adapter": normalize_address(data.get("adapter_address")) or "—",
             },
         )
 

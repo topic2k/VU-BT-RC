@@ -216,6 +216,27 @@ class ConfirmUnpairTest(unittest.IsolatedAsyncioTestCase):
         patcher.start()
         self.addCleanup(patcher.stop)
 
+    async def test_repair_options_are_translatable_and_missing_addresses_are_neutral(self):
+        captured = []
+
+        def select_config(**kwargs):
+            captured.append(kwargs)
+            return kwargs
+
+        self.flow.data = {}
+        with patch.object(self.repairs.selector, "SelectSelectorConfig", select_config):
+            result = await self.flow.async_step_confirm()
+        self.assertEqual(result["data_schema"]({}), {"action": "keep"})
+        self.assertEqual(result["description_placeholders"], {"address": "—", "adapter": "—"})
+        self.assertEqual(captured[0]["translation_key"], "unpair_action")
+        self.assertEqual(captured[0]["options"], ["keep", "delete"])
+        from test_localization import catalog
+        for language in ("de", "en"):
+            options = catalog(language)["selector"][captured[0]["translation_key"]]["options"]
+            self.assertEqual(set(options), set(captured[0]["options"]))
+            self.assertTrue(all(options.values()))
+        self.remove.assert_not_called()
+
     async def test_initial_dialog_and_keep_do_not_unpair(self):
         result = await self.flow.async_step_init()
         self.assertEqual(result["data_schema"]({}), {"action": "keep"})
