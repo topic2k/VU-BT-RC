@@ -41,8 +41,8 @@ git diff --check
 
 Before a release, `version` in `custom_components/vuplus_hid_raw/manifest.json`,
 `INTEGRATION_VERSION` in `custom_components/vuplus_hid_raw/__init__.py`, the newest
-changelog entry and the Git tag must agree. The initial release version is
-`1.0.0`, with tag `v1.0.0`.
+changelog entry and the Git tag must agree. Tags use the `v` prefix, for example
+`v1.0.2` for version `1.0.2`.
 
 The `.github/workflows/validate.yml` workflow runs tests, Python syntax checks,
 Home Assistant metadata validation with Hassfest and HACS validation on GitHub.
@@ -53,11 +53,12 @@ and English together.
 Full HACS validation requires the public GitHub repository with a description,
 topics and enabled issues.
 
-Also test on Home Assistant OS / Raspberry Pi / aarch64: a fresh installation,
-Bluetooth pairing, every supported button, short and long presses, reconnection,
-diagnostics and both choices in the repair dialog after deletion, with both
-German and English language settings. Tests with simulated Home Assistant and
-BlueZ do not replace hardware testing.
+For the first release, installation through HACS, adding the integration,
+Bluetooth pairing and explicitly confirmed unpairing have been tested with the
+remote. For later feature changes, also test buttons, short and long presses,
+reconnection, diagnostics and both languages on Home Assistant OS / Raspberry Pi /
+aarch64. Tests with simulated Home Assistant and BlueZ do not replace hardware
+testing.
 
 ## Publish a release
 
@@ -74,18 +75,18 @@ BlueZ do not replace hardware testing.
 4. Tag the checked commit and push the tag:
 
    ```sh
-   git tag -a v1.0.0 -m "Release 1.0.0"
-   git push origin v1.0.0
+   git tag -a vX.Y.Z -m "Release X.Y.Z"
+   git push origin vX.Y.Z
    ```
 
-5. Create a GitHub release for tag `v1.0.0`, titled `1.0.0`. Use the `1.0.0`
+5. Create a GitHub release for tag `vX.Y.Z`, titled `X.Y.Z`. Use the `X.Y.Z`
    sections from `CHANGELOG.md` and `CHANGELOG.en.md` as a bilingual description
    and publish it as a regular release.
 
 No additional ZIP release asset is required. HACS uses the integration directory
 from the repository at the selected release tag.
 
-A release can be prepared as a **draft** using the intended tag `v1.0.0` and
+A release can be prepared as a **draft** using the intended tag `vX.Y.Z` and
 the checked commit as its target. Publish the draft only after completing the
 checks. If further changes are made, update its target commit and bilingual
 release description. A draft is not offered to HACS users as a published version.

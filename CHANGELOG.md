@@ -11,6 +11,8 @@
 ## 1.0.2
 
 - Sprachumschalter in allen zweisprachigen Dokumentationen an den Anfang verschoben.
+- Installation über HACS sowie Hinzufügen, Bluetooth-Kopplung und bestätigtes
+  Entkoppeln mit der Fernbedienung getestet.
 
 ## 1.0.1
 

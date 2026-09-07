@@ -347,9 +347,11 @@ are described in the [remote guide](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.m
 - Bluetooth proxies cannot replace a local evdev device.
 - Multiple remotes with identical Linux device names cannot be configured
   separately; device selection and discovery distinguish them only by name.
-- Automated tests simulate Home Assistant and the BlueZ transport. A complete
-  test of pairing, repair dialogs and unpairing with the real remote under
-  HA OS on Raspberry Pi/aarch64 is still pending.
+- Installation through HACS, adding the integration, Bluetooth pairing and
+  explicitly confirmed unpairing have been tested with the remote. Automated
+  tests still simulate Home Assistant and the BlueZ transport; buttons, long
+  presses and reconnection should also be checked on the target hardware before
+  a future feature expansion.
 
 ## Development
 

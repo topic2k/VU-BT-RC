@@ -378,9 +378,11 @@ Lautstärke-Programmierung steht in
 - Mehrere Fernbedienungen mit identischem Linux-Gerätenamen lassen sich nicht
   getrennt konfigurieren; die Geräteauswahl und der Reader unterscheiden sie
   ausschließlich anhand ihres Namens.
-- Die automatisierten Tests simulieren Home Assistant und den BlueZ-Transport.
-  Ein vollständiger Test von Kopplung, Reparaturdialog und Entkopplung mit echter
-  Fernbedienung unter HA OS auf Raspberry Pi/aarch64 ist noch ausstehend.
+- Installation über HACS sowie Hinzufügen, Bluetooth-Kopplung und bestätigtes
+  Entkoppeln sind mit der Fernbedienung getestet. Die automatisierten Tests
+  simulieren weiterhin Home Assistant und den BlueZ-Transport; Tasten, Langdruck
+  und Wiederverbindung sollten vor einem späteren Funktionsausbau zusätzlich auf
+  der eigenen Zielhardware geprüft werden.
 
 ## Entwicklung
 

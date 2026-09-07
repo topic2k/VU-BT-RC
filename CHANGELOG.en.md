@@ -11,6 +11,8 @@
 ## 1.0.2
 
 - Moved the language selector to the beginning of every bilingual document.
+- Tested installation through HACS, adding the integration, Bluetooth pairing and
+  explicitly confirmed unpairing with the remote.
 
 ## 1.0.1
 

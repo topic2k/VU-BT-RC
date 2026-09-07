@@ -43,8 +43,8 @@ git diff --check
 Vor einem Release müssen `version` in
 `custom_components/vuplus_hid_raw/manifest.json`, `INTEGRATION_VERSION` in
 `custom_components/vuplus_hid_raw/__init__.py`, der neueste Changelog-Eintrag
-und der Git-Tag übereinstimmen. Für die Erstveröffentlichung lautet die Version
-`1.0.0`, der Tag `v1.0.0`.
+und der Git-Tag übereinstimmen. Der Tag erhält das Präfix `v`, zum Beispiel
+`v1.0.2` für die Version `1.0.2`.
 
 Der Workflow `.github/workflows/validate.yml` prüft auf GitHub die Tests,
 Python-Syntax, Home-Assistant-Metadaten mit Hassfest und HACS-Anforderungen.
@@ -54,11 +54,12 @@ Alle Dokumentationsänderungen werden gleichzeitig in Deutsch und Englisch gepfl
 Die vollständige HACS-Prüfung benötigt das öffentliche GitHub-Repository samt
 Beschreibung, Topics und aktivierten Issues.
 
-Zusätzlich auf der Zielplattform Home Assistant OS / Raspberry Pi / aarch64
-prüfen: frische Installation, Bluetooth-Kopplung, alle unterstützten Tasten,
-Kurz- und Langdruck, Wiederverbindung, Diagnoseanzeigen und beide Entscheidungen
-im Reparaturdialog nach dem Löschen, jeweils mit deutscher und englischer Spracheinstellung. Automatisierte Tests mit simuliertem
-Home Assistant und BlueZ ersetzen diesen Hardwaretest nicht.
+Für das erste Release sind Installation über HACS sowie Hinzufügen,
+Bluetooth-Kopplung und bestätigtes Entkoppeln mit der Fernbedienung geprüft.
+Für spätere Funktionsänderungen auf der Zielplattform Home Assistant OS /
+Raspberry Pi / aarch64 zusätzlich Tasten, Kurz- und Langdruck,
+Wiederverbindung, Diagnoseanzeigen und beide Sprachen prüfen. Automatisierte
+Tests mit simuliertem Home Assistant und BlueZ ersetzen diese Hardwaretests nicht.
 
 ## Release veröffentlichen
 
@@ -76,19 +77,19 @@ Home Assistant und BlueZ ersetzen diesen Hardwaretest nicht.
 4. Den geprüften Commit markieren und den Tag übertragen:
 
    ```sh
-   git tag -a v1.0.0 -m "Release 1.0.0"
-   git push origin v1.0.0
+   git tag -a vX.Y.Z -m "Release X.Y.Z"
+   git push origin vX.Y.Z
    ```
 
-5. Auf GitHub ein Release zum Tag `v1.0.0` mit dem Titel `1.0.0` erstellen.
-   Die Abschnitte `1.0.0` aus `CHANGELOG.md` und `CHANGELOG.en.md` als
+5. Auf GitHub ein Release zum Tag `vX.Y.Z` mit dem Titel `X.Y.Z` erstellen.
+   Die Abschnitte `X.Y.Z` aus `CHANGELOG.md` und `CHANGELOG.en.md` als
    zweisprachige Beschreibung verwenden und als
    reguläres Release veröffentlichen.
 
 Es ist kein zusätzliches ZIP-Release-Asset erforderlich. HACS verwendet den
 Integrationsordner aus dem Repository am gewählten Release-Tag.
 
-Ein Release kann vorab als **Entwurf** mit dem vorgesehenen Tag `v1.0.0` und
+Ein Release kann vorab als **Entwurf** mit dem vorgesehenen Tag `vX.Y.Z` und
 als Ziel dem geprüften Commit vorbereitet werden. Den Entwurf erst nach den
 Prüfungen veröffentlichen. Bei weiteren Änderungen Ziel-Commit und zweisprachige
 Release-Beschreibung aktualisieren. Ein Entwurf wird HACS-Nutzern nicht als
