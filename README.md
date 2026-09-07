@@ -14,7 +14,7 @@
 
 [Deutsch](README.md) | [English](README.en.md)
 
-![VU+ HID Raw Remote](logo.gh.png)
+![VU+ HID Raw Remote](logo.docs.png)
 
 ## Worum geht es?
 

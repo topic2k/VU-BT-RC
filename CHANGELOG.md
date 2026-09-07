@@ -2,9 +2,14 @@
 
 ## Inhaltsverzeichnis
 
+- [1.0.1](#101)
 - [1.0.0](#100)
 
 [Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+
+## 1.0.1
+
+- Kompakte Logo-Variante für README und Dokumentation ergänzt und dort verwendet.
 
 ## 1.0.0
 

@@ -30,7 +30,7 @@ troubleshooting.
 
 ## Overview
 
-![VU+ HID Raw Remote](logo.gh.png)
+![VU+ HID Raw Remote](logo.docs.png)
 
 This integration reads the VU+ BLE remote directly through Linux `evdev` and
 exposes it as a Home Assistant device.

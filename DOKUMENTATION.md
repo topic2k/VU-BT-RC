@@ -30,7 +30,7 @@ und die Fehlerdiagnose.
 
 ## Überblick
 
-![VU+ HID Raw Remote](logo.gh.png)
+![VU+ HID Raw Remote](logo.docs.png)
 
 Die Integration liest die VU+ BLE-Fernbedienung direkt über Linux `evdev` und stellt sie als Home-Assistant-Gerät bereit.
 

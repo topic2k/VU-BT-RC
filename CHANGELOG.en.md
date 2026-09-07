@@ -2,9 +2,14 @@
 
 ## Contents
 
+- [1.0.1](#101)
 - [1.0.0](#100)
 
 [Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+
+## 1.0.1
+
+- Added a compact logo variant and use it in the README and documentation.
 
 ## 1.0.0
 
