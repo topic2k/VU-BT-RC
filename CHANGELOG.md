@@ -29,6 +29,7 @@ Erstveröffentlichung der Home-Assistant-Integration **VU+ HID Raw Remote**.
   Reparaturauswahl und vollständig zweisprachiger Dokumentation.
 - HACS-Repositorystruktur, Installationsanleitung, Fernbedienungsanleitung und
   automatische Prüfungen für Python, Home Assistant und HACS.
+- GitHub-Projektlogo und Konfiguration für zusätzliche Entwicklungswerkzeuge.
 
 `TV Power` und `AV` liefern über die verwendete evdev-Schnittstelle keine
 Ereignisse und stehen nicht als Automationsauslöser zur Verfügung.

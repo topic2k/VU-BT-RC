@@ -26,7 +26,7 @@
 
 ## Overview
 
-![VU+ HID Raw Remote](custom_components/vuplus_hid_raw/brand/logo.png)
+![VU+ HID Raw Remote](logo.gh.png)
 
 This integration reads the VU+ BLE remote directly through Linux `evdev` and
 exposes it as a Home Assistant device.
@@ -360,7 +360,9 @@ python -m compileall -q custom_components tests
 
 Tests replace Home Assistant, evdev and the Linux D-Bus transport with test doubles.
 GitHub Actions additionally runs Hassfest and HACS validation.
-See the [release guide](RELEASING.en.md) for publishing instructions.
+Settings for additional development tools are in [pyproject.toml](pyproject.toml);
+they do not replace the release checks above. See the
+[release guide](RELEASING.en.md) for publishing instructions.
 
 Version history is kept exclusively in [CHANGELOG.en.md](CHANGELOG.en.md).
 

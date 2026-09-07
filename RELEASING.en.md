@@ -11,19 +11,17 @@
 
 ## Repository
 
-The project is prepared for [topic2k/VU-BT-RC](https://github.com/topic2k/VU-BT-RC)
-with `main` as the default branch. Installation is documented in the
+The public repository [topic2k/VU-BT-RC](https://github.com/topic2k/VU-BT-RC)
+uses `main` as its default branch. Installation is documented in the
 [README](README.en.md); release contents are in the [changelog](CHANGELOG.en.md).
 
-To publish on GitHub:
+Repository settings for HACS:
 
-- Create a public repository named `topic2k/VU-BT-RC`. Do not initialize it with
-  a README, license or `.gitignore`; these files come from the local repository.
-- Enable issues.
-- Set a description, for example: “Home Assistant integration for the VU+
-  Bluetooth remote via local Linux evdev.”
-- Set topics: `home-assistant`, `hacs`, `custom-integration`, `bluetooth`,
-  `vuplus`, `evdev`.
+- Public repository with issues enabled.
+- Description: “Home Assistant integration for the VU+ Bluetooth remote via
+  local Linux evdev.”
+- Topics: `home-assistant`, `hacs`, `custom-integration`, `bluetooth`, `vuplus`,
+  `evdev`.
 
 The project uses the [MIT License](LICENSE).
 
@@ -70,7 +68,9 @@ BlueZ do not replace hardware testing.
    git push -u origin main
    ```
 
-3. Wait for the GitHub Actions checks to pass.
+3. Wait for the GitHub Actions checks to pass for the commit being released.
+   Complete the hardware tests under [Checks](#checks) and update the pending-test
+   notes in both README versions based on the actual results.
 4. Tag the checked commit and push the tag:
 
    ```sh
@@ -84,6 +84,11 @@ BlueZ do not replace hardware testing.
 
 No additional ZIP release asset is required. HACS uses the integration directory
 from the repository at the selected release tag.
+
+A release can be prepared as a **draft** using the intended tag `v1.0.0` and
+the checked commit as its target. Publish the draft only after completing the
+checks. If further changes are made, update its target commit and bilingual
+release description. A draft is not offered to HACS users as a published version.
 
 ## HACS
 

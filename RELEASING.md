@@ -11,21 +11,18 @@
 
 ## Repository
 
-Das Projekt ist für [topic2k/VU-BT-RC](https://github.com/topic2k/VU-BT-RC)
-mit dem Hauptzweig `main` vorbereitet. Die Installation ist in der
+Das öffentliche Repository [topic2k/VU-BT-RC](https://github.com/topic2k/VU-BT-RC)
+verwendet den Hauptzweig `main`. Die Installation ist in der
 [README](README.md) beschrieben; die Release-Inhalte stehen im
 [Changelog](CHANGELOG.md).
 
-Für die Veröffentlichung auf GitHub:
+Repository-Einstellungen für HACS:
 
-- Ein öffentliches Repository `topic2k/VU-BT-RC` anlegen. Beim Anlegen keine
-  README, Lizenz oder `.gitignore` erzeugen lassen; die Projektdateien werden
-  aus dem lokalen Repository übernommen.
-- Issues aktivieren.
-- Beschreibung setzen, zum Beispiel: „Home Assistant integration for the VU+
-  Bluetooth remote via local Linux evdev.“
-- Topics setzen: `home-assistant`, `hacs`, `custom-integration`, `bluetooth`,
-  `vuplus`, `evdev`.
+- Öffentliches Repository mit aktivierten Issues.
+- Beschreibung: „Home Assistant integration for the VU+ Bluetooth remote via
+  local Linux evdev.“
+- Topics: `home-assistant`, `hacs`, `custom-integration`, `bluetooth`, `vuplus`,
+  `evdev`.
 
 Das Projekt steht unter der [MIT-Lizenz](LICENSE).
 
@@ -72,7 +69,10 @@ Home Assistant und BlueZ ersetzen diesen Hardwaretest nicht.
    git push -u origin main
    ```
 
-3. Die GitHub-Actions-Prüfungen erfolgreich abschließen lassen.
+3. Die GitHub-Actions-Prüfungen für den zu veröffentlichenden Commit erfolgreich
+   abschließen lassen. Den Hardwaretest aus dem Abschnitt [Prüfungen](#prüfungen)
+   durchführen und ausstehende Testhinweise in beiden README-Fassungen anhand
+   des tatsächlichen Ergebnisses aktualisieren.
 4. Den geprüften Commit markieren und den Tag übertragen:
 
    ```sh
@@ -87,6 +87,12 @@ Home Assistant und BlueZ ersetzen diesen Hardwaretest nicht.
 
 Es ist kein zusätzliches ZIP-Release-Asset erforderlich. HACS verwendet den
 Integrationsordner aus dem Repository am gewählten Release-Tag.
+
+Ein Release kann vorab als **Entwurf** mit dem vorgesehenen Tag `v1.0.0` und
+als Ziel dem geprüften Commit vorbereitet werden. Den Entwurf erst nach den
+Prüfungen veröffentlichen. Bei weiteren Änderungen Ziel-Commit und zweisprachige
+Release-Beschreibung aktualisieren. Ein Entwurf wird HACS-Nutzern nicht als
+veröffentlichte Version angeboten.
 
 ## HACS
 

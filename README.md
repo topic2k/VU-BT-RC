@@ -26,7 +26,7 @@
 
 ## Überblick
 
-![VU+ HID Raw Remote](custom_components/vuplus_hid_raw/brand/logo.png)
+![VU+ HID Raw Remote](logo.gh.png)
 
 Die Integration liest die VU+ BLE-Fernbedienung direkt über Linux `evdev` und stellt sie als Home-Assistant-Gerät bereit.
 
@@ -392,7 +392,10 @@ python -m compileall -q custom_components tests
 
 Die Tests ersetzen Home Assistant, evdev und den Linux-D-Bus-Transport durch
 Testdoubles. Unter GitHub Actions laufen außerdem Hassfest und die HACS-Validierung.
-Der Ablauf für die Veröffentlichung steht in [RELEASING.md](RELEASING.md).
+Die Einstellungen für zusätzliche Entwicklungswerkzeuge stehen in
+[pyproject.toml](pyproject.toml); sie ersetzen nicht die oben genannten
+Release-Prüfungen. Der Ablauf für die Veröffentlichung steht in
+[RELEASING.md](RELEASING.md).
 
 Die Versionshistorie steht ausschließlich in [CHANGELOG.md](CHANGELOG.md).
 
