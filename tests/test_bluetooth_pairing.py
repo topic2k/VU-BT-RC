@@ -6,13 +6,11 @@ Home Assistant and the Linux D-Bus transport are replaced by small test doubles.
 
 import asyncio
 import importlib
-from pathlib import Path
 import sys
 import types
 import unittest
 from unittest.mock import AsyncMock, patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / ".test-deps"))
 import test_event_entity_source  # Installs the existing Home Assistant doubles.
 from dbus_fast import Message, Variant
 from dbus_fast.errors import DBusError

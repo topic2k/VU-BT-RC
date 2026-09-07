@@ -1,3 +1,5 @@
+[Deutsch](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.md) | [English](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.md)
+
 # VU+ BT/IR-Fernbedienung: Tastenkombinationen
 
 ## Inhaltsverzeichnis
@@ -11,8 +13,6 @@
 - [TV-Herstellercodes](#tv-herstellercodes)
 - [Hinweise zur Home-Assistant-Integration](#hinweise-zur-home-assistant-integration)
 - [Quellen](#quellen)
-
-[Deutsch](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.md) | [English](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.md)
 
 ## Geltungsbereich und Schreibweise
 

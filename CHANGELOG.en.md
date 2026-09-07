@@ -1,11 +1,16 @@
+[Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+
 # Changelog
 
 ## Contents
 
+- [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
 
-[Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+## 1.0.2
+
+- Moved the language selector to the beginning of every bilingual document.
 
 ## 1.0.1
 

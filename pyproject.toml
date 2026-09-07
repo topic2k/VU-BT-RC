@@ -4,6 +4,12 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-ra"
 
+[dependency-groups]
+test = [
+  "dbus-fast==5.0.22",
+  "voluptuous==0.16.0",
+]
+
 [tool.ruff]
 target-version = "py314"
 line-length = 88

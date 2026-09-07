@@ -1,3 +1,5 @@
+[Deutsch](RELEASING.md) | [English](RELEASING.en.md)
+
 # Publishing
 
 ## Contents
@@ -6,8 +8,6 @@
 - [Checks](#checks)
 - [Publish a release](#publish-a-release)
 - [HACS](#hacs)
-
-[Deutsch](RELEASING.md) | [English](RELEASING.en.md)
 
 ## Repository
 
@@ -33,7 +33,7 @@ refer to this repository and `@topic2k`.
 Run from the project directory with Python 3.14:
 
 ```sh
-python -m pip install -r requirements-test.txt
+python -m pip install --group test
 python -m unittest discover -s tests -v
 python -m compileall -q custom_components tests
 git diff --check

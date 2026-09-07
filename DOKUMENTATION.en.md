@@ -1,3 +1,5 @@
+[Deutsch](DOKUMENTATION.md) | [English](DOKUMENTATION.en.md)
+
 # VU+ HID Raw Remote – detailed documentation
 
 ## Contents
@@ -21,8 +23,6 @@
 - [Known limitations](#known-limitations)
 - [Development](#development)
 - [License](#license)
-
-[Deutsch](DOKUMENTATION.md) | [English](DOKUMENTATION.en.md)
 
 This reference complements the concise [README](README.en.md) for GitHub and
 HACS. It covers technical background, every setup path, event data and
@@ -357,7 +357,7 @@ Development rules and permanent project requirements are in [AGENTS.en.md](AGENT
 Use Python 3.14 for local checks:
 
 ```sh
-python -m pip install -r requirements-test.txt
+python -m pip install --group test
 python -m unittest discover -s tests -v
 python -m compileall -q custom_components tests
 ```

@@ -1,11 +1,16 @@
+[Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+
 # Changelog
 
 ## Inhaltsverzeichnis
 
+- [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
 
-[Deutsch](CHANGELOG.md) | [English](CHANGELOG.en.md)
+## 1.0.2
+
+- Sprachumschalter in allen zweisprachigen Dokumentationen an den Anfang verschoben.
 
 ## 1.0.1
 

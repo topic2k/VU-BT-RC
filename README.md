@@ -1,3 +1,5 @@
+[Deutsch](README.md) | [English](README.en.md)
+
 # VU+ HID Raw Remote
 
 ## Inhaltsverzeichnis
@@ -11,8 +13,6 @@
 - [Wichtige Hinweise](#wichtige-hinweise)
 - [Mehr erfahren](#mehr-erfahren)
 - [Lizenz](#lizenz)
-
-[Deutsch](README.md) | [English](README.en.md)
 
 ![VU+ HID Raw Remote](logo.docs.png)
 

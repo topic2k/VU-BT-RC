@@ -1,6 +1,6 @@
-# Project instructions
-
 [Deutsch](AGENTS.md) | [English](AGENTS.en.md)
+
+# Project instructions
 
 ## Project
 

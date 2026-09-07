@@ -1,6 +1,6 @@
-# AGENTS.md
-
 [Deutsch](AGENTS.md) | [English](AGENTS.en.md)
+
+# AGENTS.md
 
 ## Projekt
 

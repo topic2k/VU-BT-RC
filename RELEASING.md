@@ -1,3 +1,5 @@
+[Deutsch](RELEASING.md) | [English](RELEASING.en.md)
+
 # Veröffentlichung
 
 ## Inhaltsverzeichnis
@@ -6,8 +8,6 @@
 - [Prüfungen](#prüfungen)
 - [Release veröffentlichen](#release-veröffentlichen)
 - [HACS](#hacs)
-
-[Deutsch](RELEASING.md) | [English](RELEASING.en.md)
 
 ## Repository
 
@@ -34,7 +34,7 @@ verweisen auf dieses Repository und `@topic2k`.
 Mit Python 3.14 im Projektverzeichnis ausführen:
 
 ```sh
-python -m pip install -r requirements-test.txt
+python -m pip install --group test
 python -m unittest discover -s tests -v
 python -m compileall -q custom_components tests
 git diff --check

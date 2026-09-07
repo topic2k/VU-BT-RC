@@ -1,3 +1,5 @@
+[Deutsch](DOKUMENTATION.md) | [English](DOKUMENTATION.en.md)
+
 # VU+ HID Raw Remote – ausführliche Dokumentation
 
 ## Inhaltsverzeichnis
@@ -21,8 +23,6 @@
 - [Bekannte Einschränkungen](#bekannte-einschränkungen)
 - [Entwicklung](#entwicklung)
 - [Lizenz](#lizenz)
-
-[Deutsch](DOKUMENTATION.md) | [English](DOKUMENTATION.en.md)
 
 Diese Referenz ergänzt das kompakte [README](README.md) für GitHub und HACS.
 Sie beschreibt die technischen Hintergründe, alle Einrichtungswege, Event-Daten
@@ -389,7 +389,7 @@ Entwicklungsregeln und dauerhafte Projektvorgaben stehen in [AGENTS.md](AGENTS.m
 Für die lokalen Prüfungen Python 3.14 verwenden:
 
 ```sh
-python -m pip install -r requirements-test.txt
+python -m pip install --group test
 python -m unittest discover -s tests -v
 python -m compileall -q custom_components tests
 ```

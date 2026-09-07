@@ -1,7 +1,6 @@
 # Python and local test dependencies
 __pycache__/
 *.py[cod]
-.test-deps/
 .venv/
 venv/
 .pytest_cache/

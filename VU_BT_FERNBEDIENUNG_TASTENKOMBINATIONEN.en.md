@@ -1,3 +1,5 @@
+[Deutsch](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.md) | [English](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.md)
+
 # VU+ BT/IR remote: button combinations
 
 ## Contents
@@ -11,8 +13,6 @@
 - [TV manufacturer codes](#tv-manufacturer-codes)
 - [Home Assistant integration notes](#home-assistant-integration-notes)
 - [Sources](#sources)
-
-[Deutsch](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.md) | [English](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.md)
 
 ## Scope and notation
 

@@ -1,6 +1,6 @@
-# MIT-Lizenz – deutsche Übersetzung
-
 [Deutsch](LICENSE.de.md) | [English](LICENSE)
+
+# MIT-Lizenz – deutsche Übersetzung
 
 Diese Übersetzung dient der Orientierung. Maßgeblich ist der
 [englische Originaltext](LICENSE).
