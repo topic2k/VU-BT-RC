@@ -64,7 +64,8 @@ TV Power und AV erzeugen auf der aktuell verwendeten Linux-evdev-Schnittstelle k
 
 ## Dokumentation
 
-README.md enthält ausschließlich die aktuelle technische Dokumentation.
+README.md enthält die aktuelle, kompakte Nutzerdokumentation für GitHub und HACS.
+Ausführliche Einrichtungs- und Referenzinformationen stehen in DOKUMENTATION.md.
 CHANGELOG.md enthält ausschließlich die Versionshistorie.
 Der Changelog wird nicht in README.md dupliziert.
 
@@ -75,7 +76,10 @@ CHANGELOG.md:
 
 README.md:
 - beginnt mit einem Inhaltsverzeichnis
-- enthält nur aktuelle Informationen
+- enthält nur aktuelle Informationen aus Sicht von Anwendern: Zweck, Funktionen,
+  Installation, Einrichtung, Nutzung, Grenzen und weiterführende Links
+- bleibt übersichtlich und verweist für technische Hintergründe auf
+  DOKUMENTATION.md
 - erledigte Punkte werden aus "Weiterentwicklung" entfernt
 - enthält keine historische Versionsliste
 

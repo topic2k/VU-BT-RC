@@ -68,9 +68,10 @@ Do not implement or document these buttons as working.
 
 ## Documentation
 
-`README.md` contains only current technical documentation. `CHANGELOG.md` contains
-only version history. Do not duplicate the changelog in the README. The same
-rules apply to their English counterparts.
+`README.md` contains the current, concise user documentation for GitHub and HACS.
+Detailed setup and reference information belongs in `DOKUMENTATION.md`.
+`CHANGELOG.md` contains only version history. Do not duplicate the changelog in
+the README. The same rules apply to their English counterparts.
 
 The changelog:
 
@@ -81,7 +82,9 @@ The changelog:
 The README:
 
 - Starts with a table of contents.
-- Contains current information only.
+- Contains current user-facing information: purpose, features, installation,
+  setup, use, limitations and links to further documentation.
+- Stays easy to scan and links to `DOKUMENTATION.md` for technical background.
 - Removes completed items from future-development lists.
 - Does not contain a historical version list.
 
