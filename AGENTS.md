@@ -69,6 +69,12 @@ Ausführliche Einrichtungs- und Referenzinformationen stehen in DOKUMENTATION.md
 CHANGELOG.md enthält ausschließlich die Versionshistorie.
 Der Changelog wird nicht in README.md dupliziert.
 
+Für die HAVUOpenWebif-Anbindung des Blueprints müssen geprüfte Version, genauer
+Commit und tatsächlicher Prüfumfang in beiden Sprachfassungen dokumentiert sein.
+Quellcodeprüfung und simulierte Tests nicht als Test am Receiver bezeichnen.
+Auf mögliche Inkompatibilität anderer/neuerer Versionen hinweisen; bei einer neuen
+Prüfbasis auch Blueprint-Beschreibungen und Testreferenz gemeinsam aktualisieren.
+
 CHANGELOG.md:
 - beginnt mit einem Inhaltsverzeichnis
 - führt die neueste Version zuerst
@@ -83,14 +89,47 @@ README.md:
 - erledigte Punkte werden aus "Weiterentwicklung" entfernt
 - enthält keine historische Versionsliste
 
+## Branches, Freigabe und Releases
+
+- Änderungen zuerst auf `develop` oder bei Bedarf auf einem neuen Arbeitsbranch
+  umsetzen; keine direkten Änderungen oder Commits auf `main`.
+- Änderungen erst nach ausdrücklicher Freigabe durch den Nutzer und ausschließlich
+  per Pull Request nach `main` übernehmen.
+- Ein neues Release nur auf ausdrückliche Anweisung des Nutzers erstellen.
+  Die Freigabe von Änderungen oder eines Pull Requests ist keine Release-Freigabe.
+- Die folgenden Versionierungsregeln erlauben keine automatische Veröffentlichung.
+
 ## Versionierung
 
-Bis zur ersten Veröffentlichung gehören Ergänzungen zur Version 1.0.0; der
-Erstveröffentlichungseintrag wird in beiden Changelog-Fassungen aktualisiert.
-Nach der ersten Veröffentlichung gilt:
-
-Bei einer nutzerrelevanten Änderung Version in manifest.json erhöhen und CHANGELOG.md ergänzen. Keine künstlichen Release-Versionen für reine interne Kleinständerungen erzeugen.
-Reine Dokumentationsänderungen erhöhen ausschließlich die Patch-Version der Integration.
+- Bei Änderungen auf `develop` oder einem Arbeitsbranch die Version automatisch
+  und ohne gesonderte Aufforderung passend zum gesamten unveröffentlichten Umfang
+  gegenüber der letzten stabilen Version erhöhen: Patch für Fehlerkorrekturen,
+  interne Änderungen und reine Dokumentation, Minor für rückwärtskompatible neue
+  Funktionen, Major für inkompatible Änderungen.
+- Entwicklungsstände verwenden `X.Y.Z-dev.N`, beginnend mit `dev.1`, zum Beispiel
+  `1.1.0-dev.1`. Bei weiteren abgeschlossenen Änderungen an derselben Zielversion
+  den Zähler erhöhen; bei einer höheren Zielversion wieder mit `dev.1` beginnen.
+  Nicht für jeden einzelnen Dateiedit eine neue Version vergeben.
+- `version` in `manifest.json`, `INTEGRATION_VERSION` und der neueste Eintrag in
+  beiden Changelogs müssen einschließlich Entwicklungssuffix übereinstimmen.
+  Den Changelog-Eintrag ausdrücklich als unveröffentlichte Entwicklerversion
+  kennzeichnen und bei weiteren Änderungen derselben Zielversion fortschreiben.
+- Unmittelbar vor jedem Pull Request nach `main` den aktuellen Remote-Stand von
+  `main`, die Tags und die veröffentlichten Releases abrufen. Die nächste passende
+  Version anhand des letzten stabilen Releases und des gesamten vorgesehenen
+  Änderungsumfangs neu bestimmen. Zwischenzeitliche Versionsanhebungen durch
+  andere Branches oder Commits berücksichtigen; keine bereits veröffentlichte
+  oder auf `main` vergebene Version erneut verwenden und keine Version absenken.
+- Noch auf dem Arbeitsbranch das vollständige Suffix `-dev.N` entfernen und
+  Manifest, `INTEGRATION_VERSION`, beide Changelogs und deren Inhaltsverzeichnisse
+  synchronisieren. Den Eintrag bis zur Veröffentlichung als unveröffentlicht,
+  aber nicht mehr als Entwicklerversion kennzeichnen. Danach die Prüfungen erneut
+  ausführen. Ohne aktuellen Remote-Abgleich ist diese Vorbereitung unvollständig.
+- Wenn sich `main` oder die Release-Basis während eines offenen Pull Requests
+  ändert, den Versionsabgleich vor dem Merge wiederholen und nötige Anpassungen
+  im Quellbranch vornehmen. Die Übernahme erfolgt erst nach Nutzerfreigabe.
+  Eine Version ohne Entwicklungssuffix oder ein Merge erlaubt keine automatischen
+  Tags oder Releases; dafür bleibt eine ausdrückliche Release-Anweisung nötig.
 
 ## Entwicklungsregeln
 

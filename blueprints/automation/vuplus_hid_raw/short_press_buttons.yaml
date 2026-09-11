@@ -1,0 +1,477 @@
+blueprint:
+  name: "VU+: kurze Tastendrücke zuordnen"
+  description: >-
+    Eine Automation für alle Tasten der VU+-Fernbedienung. Das Ziel ergibt sich
+    bei HAVUOpenWebif automatisch aus dem Receiver und den Keycodes, sonst
+    aus Präfix + command (z. B. button.receiver_ + ok). Abweichende Namen und
+    einzelne Ziele lassen sich überschreiben. Bedingungen können ein alternatives
+    Zielprofil aktivieren. Alternative Ziele unterstützen auch Media Player,
+    Schalter, Skripte, Szenen, Lichter und weitere steuerbare Entitäten.
+    Nur press_end löst die gewählte Aktion aus.
+    Geprüfte Basis: HAVUOpenWebif 1.1.0 (Commit f20b23d74b6b63f343dd42d2177dec22df068d76),
+    Quellcodeprüfung und lokale Simulation; noch kein Test am Receiver.
+    Mit anderen oder neueren HAVUOpenWebif-Versionen kann die Zuordnung nicht mehr funktionieren.
+  domain: automation
+  homeassistant:
+    min_version: "2026.9.0"
+  input:
+    remote:
+      name: Fernbedienung
+      selector:
+        device:
+          filter:
+            - integration: vuplus_hid_raw
+    default_receiver:
+      name: HAVUOpenWebif-Receiver (optional)
+      description: "Automatische Zuordnung über keycode, unabhängig von Entity-Namen. Hat Vorrang vor dem Präfix; explizite Ziele bleiben vorrangig. Mehrdeutige Treffer benötigen ein explizites Ziel."
+      default: ""
+      selector:
+        device:
+          filter:
+            - integration: havuopenwebif
+    default_prefix:
+      name: Standard-Zielpräfix
+      description: "Ohne Receiver-Auswahl: inklusive button. und abschließendem Unterstrich, z. B. button.receiver_. Leer: nur explizite Zuordnungen."
+      default: ""
+      selector:
+        text: {}
+    command_aliases:
+      name: Abweichende Tastennamen
+      description: 'YAML-Objekt command: Zielsuffix, z. B. volume_up: volume_plus. Ziffern als Schlüssel in Anführungszeichen setzen. Gilt für beide Präfixe.'
+      default: {}
+      selector:
+        object: {}
+    default_buttons:
+      name: Explizite Standard-Ziele
+      description: 'YAML-Objekt command: button.entity_id. Hat Vorrang vor der Namensregel. Leerer Wert "" deaktiviert die Taste. Ziffern als Schlüssel in Anführungszeichen setzen.'
+      default: {}
+      selector:
+        object: {}
+    alternative_enabled:
+      name: Alternative Zuordnung aktivieren
+      description: "Einschalten, um die folgenden Bedingungen und Ziele zu verwenden."
+      default: false
+      selector:
+        boolean: {}
+    alternative_conditions:
+      name: Bedingungen für alternative Ziele
+      description: "Alle Bedingungen müssen erfüllt sein; eine leere Liste gilt immer. ODER-Gruppen sind möglich. Templates können command verwenden."
+      default: []
+      selector:
+        condition: {}
+    alternative_receiver:
+      name: Alternativer HAVUOpenWebif-Receiver (optional)
+      description: "Wechselt bei erfüllten Bedingungen das gesamte Receiver-Zielprofil. Standard-Einzelziele werden nicht übernommen. Hat Vorrang vor dem alternativen Präfix."
+      default: ""
+      selector:
+        device:
+          filter:
+            - integration: havuopenwebif
+    alternative_prefix:
+      name: Alternatives Zielpräfix
+      description: "Leer: Standard-Zuordnung beibehalten und nur einzelne Tasten überschreiben. Mit Präfix: gesamtes Zielprofil ersetzen, ohne Standard-Einzelziele zu übernehmen."
+      default: ""
+      selector:
+        text: {}
+    alternative_button_targets:
+      name: Explizite alternative Ziele
+      description: 'Unter Ziel nach Typ auswählen erst den Typ wählen, dann im Entitätsfeld per Freitext suchen.
+        Taste, Ziel-Entität und Aktion auswählen. Ohne Aktion: Buttons drücken, Skripte/Szenen starten, Media
+        Player Wiedergabe/Pause; Schalter, Lichter, Ventilatoren und Rollläden umschalten. Deaktivieren hat
+        Vorrang. Letzter vollständiger Eintrag gewinnt. Entität und ungefilterte Aktionsliste stehen im selben Dialog; passende Aktion selbst wählen. Gerätefunktionen werden nicht geprüft.'
+      default: []
+      selector:
+        object:
+          multiple: true
+          label_field: command
+          fields:
+            command:
+              label: Taste
+              required: true
+              selector:
+                select:
+                  mode: dropdown
+                  options:
+                  - value: ok
+                    label: OK
+                  - value: up
+                    label: Pfeil hoch
+                  - value: down
+                    label: Pfeil runter
+                  - value: left
+                    label: Pfeil links
+                  - value: right
+                    label: Pfeil rechts
+                  - value: volume_up
+                    label: Lautstärke Plus
+                  - value: volume_down
+                    label: Lautstärke Minus
+                  - value: channel_up
+                    label: Kanal Plus
+                  - value: channel_down
+                    label: Kanal Minus
+                  - value: menu
+                    label: Menü
+                  - value: pvr
+                    label: PVR
+                  - value: mute
+                    label: Stumm
+                  - value: rewind
+                    label: Zurückspulen
+                  - value: forward
+                    label: Vorspulen
+                  - value: play
+                    label: Play
+                  - value: pause
+                    label: Pause
+                  - value: record
+                    label: Aufnahme
+                  - value: stop
+                    label: Stop
+                  - value: radio
+                    label: Radio
+                  - value: help
+                    label: Hilfe
+                  - value: stb_power
+                    label: STB Power
+                  - value: red
+                    label: Rot
+                  - value: green
+                    label: Grün
+                  - value: yellow
+                    label: Gelb
+                  - value: blue
+                    label: Blau
+                  - value: '0'
+                    label: '0'
+                  - value: '1'
+                    label: '1'
+                  - value: '2'
+                    label: '2'
+                  - value: '3'
+                    label: '3'
+                  - value: '4'
+                    label: '4'
+                  - value: '5'
+                    label: '5'
+                  - value: '6'
+                    label: '6'
+                  - value: '7'
+                    label: '7'
+                  - value: '8'
+                    label: '8'
+                  - value: '9'
+                    label: '9'
+                  - value: epg
+                    label: EPG
+                  - value: audio
+                    label: Audio
+                  - value: teletext
+                    label: Teletext
+                  - value: subtitle
+                    label: Untertitel
+                  - value: speak
+                    label: Sprechen
+                  - value: tv
+                    label: TV
+                  - value: exit
+                    label: Exit
+                  - value: left_0
+                    label: Links neben 0
+                  - value: right_0
+                    label: Rechts neben 0
+            typed_target:
+              label: Ziel nach Typ auswählen
+              selector:
+                choose:
+                  choices:
+                    Button:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: button
+                    Helfer-Button:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: input_button
+                    Media Player:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: media_player
+                    Schalter:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: switch
+                    Schalt-Helfer:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: input_boolean
+                    Skript:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: script
+                    Szene:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: scene
+                    Licht:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: light
+                    Ventilator:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: fan
+                    Rollladen:
+                      selector:
+                        entity:
+                          filter:
+                          - domain: cover
+            action:
+              label: Aktion (optional)
+              selector:
+                select:
+                  mode: dropdown
+                  options:
+                  - value: button.press
+                    label: Button drücken
+                  - value: input_button.press
+                    label: Helfer-Button drücken
+                  - value: media_player.turn_on
+                    label: 'Media Player: einschalten'
+                  - value: media_player.turn_off
+                    label: 'Media Player: ausschalten'
+                  - value: media_player.toggle
+                    label: 'Media Player: umschalten'
+                  - value: media_player.volume_up
+                    label: 'Media Player: Lautstärke erhöhen'
+                  - value: media_player.volume_down
+                    label: 'Media Player: Lautstärke verringern'
+                  - value: media_player.volume_mute
+                    label: 'Media Player: Stummschaltung setzen (Daten erforderlich)'
+                  - value: media_player.media_play
+                    label: 'Media Player: Wiedergabe starten'
+                  - value: media_player.media_pause
+                    label: 'Media Player: Wiedergabe pausieren'
+                  - value: media_player.media_play_pause
+                    label: 'Media Player: Wiedergabe/Pause umschalten'
+                  - value: media_player.media_stop
+                    label: 'Media Player: Wiedergabe stoppen'
+                  - value: media_player.media_next_track
+                    label: 'Media Player: Nächster Titel'
+                  - value: media_player.media_previous_track
+                    label: 'Media Player: Vorheriger Titel'
+                  - value: media_player.select_source
+                    label: 'Media Player: Quelle wählen (Daten erforderlich)'
+                  - value: switch.turn_on
+                    label: 'Schalter: einschalten'
+                  - value: switch.turn_off
+                    label: 'Schalter: ausschalten'
+                  - value: switch.toggle
+                    label: 'Schalter: umschalten'
+                  - value: input_boolean.turn_on
+                    label: 'Schalt-Helfer: einschalten'
+                  - value: input_boolean.turn_off
+                    label: 'Schalt-Helfer: ausschalten'
+                  - value: input_boolean.toggle
+                    label: 'Schalt-Helfer: umschalten'
+                  - value: script.turn_on
+                    label: Skript starten
+                  - value: scene.turn_on
+                    label: Szene aktivieren
+                  - value: light.turn_on
+                    label: 'Licht: einschalten'
+                  - value: light.turn_off
+                    label: 'Licht: ausschalten'
+                  - value: light.toggle
+                    label: 'Licht: umschalten'
+                  - value: fan.turn_on
+                    label: 'Ventilator: einschalten'
+                  - value: fan.turn_off
+                    label: 'Ventilator: ausschalten'
+                  - value: fan.toggle
+                    label: 'Ventilator: umschalten'
+                  - value: cover.open_cover
+                    label: 'Rollladen: Öffnen'
+                  - value: cover.close_cover
+                    label: 'Rollladen: Schließen'
+                  - value: cover.stop_cover
+                    label: 'Rollladen: Stoppen'
+                  - value: cover.toggle
+                    label: 'Rollladen: Umschalten'
+            data:
+              label: Aktionsdaten (optional, YAML)
+              selector:
+                object: {}
+            disabled:
+              label: Taste deaktivieren
+              selector:
+                boolean: {}
+
+triggers:
+  - trigger: event.received
+    target:
+      device_id: !input remote
+    options:
+      event_type:
+        - press_end
+
+variables:
+  default_receiver: !input default_receiver
+  default_prefix: !input default_prefix
+  command_aliases: !input command_aliases
+  default_buttons: !input default_buttons
+  alternative_enabled: !input alternative_enabled
+  alternative_receiver: !input alternative_receiver
+  alternative_prefix: !input alternative_prefix
+  alternative_button_targets: !input alternative_button_targets
+  default_actions:
+    button: button.press
+    input_button: input_button.press
+    script: script.turn_on
+    scene: scene.turn_on
+    switch: switch.toggle
+    input_boolean: input_boolean.toggle
+    light: light.toggle
+    fan: fan.toggle
+    cover: cover.toggle
+    media_player: media_player.media_play_pause
+  # Semantic Enigma2 mapping, NOT the local evdev keycode.
+  # HAVUOpenWebif const.py at f20b23d74b6b63f343dd42d2177dec22df068d76.
+  havu_keycodes:
+    stb_power: 116
+    "0": 11
+    "1": 2
+    "2": 3
+    "3": 4
+    "4": 5
+    "5": 6
+    "6": 7
+    "7": 8
+    "8": 9
+    "9": 10
+    up: 103
+    down: 108
+    left: 105
+    right: 106
+    ok: 352
+    menu: 139
+    exit: 174
+    red: 398
+    green: 399
+    yellow: 400
+    blue: 401
+    epg: 365
+    help: 138
+    audio: 392
+    subtitle: 370
+    teletext: 388
+    tv: 377
+    radio: 385
+    play: 207
+    pause: 119
+    stop: 128
+    record: 167
+    forward: 208
+    rewind: 168
+    channel_up: 402
+    channel_down: 403
+    volume_up: 115
+    volume_down: 114
+    mute: 113
+    pvr: 366
+
+actions:
+  - variables:
+      command: "{{ trigger.to_state.attributes.command | string }}"
+      target_receiver: "{{ default_receiver }}"
+      target_prefix: "{{ default_prefix | trim }}"
+      target_buttons: "{{ default_buttons }}"
+      selected_alternative_buttons: >-
+        {% set ns = namespace(mapping={}) %}
+        {% for row in alternative_button_targets %}
+          {% set key = row.command | string %}
+          {% set choice = row.get('typed_target') or {} %}
+          {% set entity = choice.get(choice.get('active_choice', ''), '') %}
+          {% if row.get('disabled', false) %}
+            {% set ns.mapping = dict(ns.mapping, **{key: ''}) %}
+          {% elif entity %}
+            {% set ns.mapping = dict(ns.mapping, **{key: dict(row, entity_id=entity)}) %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.mapping }}
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ alternative_enabled }}"
+          - condition: and
+            conditions: !input alternative_conditions
+        sequence:
+          - variables:
+              target_receiver: >-
+                {{ alternative_receiver or ('' if alternative_prefix | trim else default_receiver) }}
+              target_prefix: "{{ (alternative_prefix | trim) or (default_prefix | trim) }}"
+              target_buttons: >-
+                {{ selected_alternative_buttons if alternative_receiver or alternative_prefix | trim
+                   else dict(default_buttons, **selected_alternative_buttons) }}
+  - variables:
+      target_button: >-
+        {% set key = command | string %}
+        {% if key in target_buttons %}
+          {{ target_buttons[key] or '' }}
+        {% elif target_receiver %}
+          {% set code = havu_keycodes.get(key) %}
+          {% set ns = namespace(matches=[]) %}
+          {% if code is not none %}
+            {% set receiver_entities = device_entities(target_receiver) %}
+            {% set havu_entities = integration_entities('havuopenwebif') %}
+            {% for entity in states.button %}
+              {% if entity.entity_id in receiver_entities
+                    and entity.entity_id in havu_entities
+                    and entity.attributes.get('keycode') == code %}
+                {% set ns.matches = ns.matches + [entity.entity_id] %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {{ ns.matches[0] if ns.matches | length == 1 else '' }}
+        {% elif target_prefix %}
+          {{ target_prefix ~ (command_aliases.get(key, key) | string) }}
+        {% else %}
+          {{ '' }}
+        {% endif %}
+  - variables:
+      target_entity: >-
+        {{ target_button.get('entity_id', '') if target_button is mapping else target_button }}
+      target_action: >-
+        {% if target_button is mapping and target_entity is string %}
+          {{ target_button.get('action') or default_actions.get(target_entity.split('.')[0], '') }}
+        {% else %}
+          {{ 'button.press' }}
+        {% endif %}
+      target_data: "{{ target_button.get('data') or {} if target_button is mapping else {} }}"
+  - condition: template
+    value_template: >-
+      {{ target_entity is string
+         and target_entity.split('.')[0] in default_actions
+         and expand(target_entity) | list | length == 1
+         and not is_state(target_entity, 'unavailable')
+         and target_action is string
+         and target_action.split('.')[0] == target_entity.split('.')[0]
+         and target_action.split('.') | length == 2
+         and has_service(target_action.split('.')[0], target_action.split('.')[1])
+         and target_data is mapping }}
+  - action: "{{ target_action }}"
+    target:
+      entity_id: "{{ target_entity }}"
+    data: "{{ target_data }}"
+
+mode: queued
+max: 50

@@ -83,6 +83,23 @@ die Tasten als Event-Entitäten und fünf Diagnoseanzeigen.
 
 ## Automationen
 
+Für die Weiterleitung an die `button.*`-Entitäten eines SAT-Receivers gibt es einen
+[Blueprint für die gesamte Fernbedienung](DOKUMENTATION.md#blueprint-kurze-tastendrücke-an-receiver-buttons).
+Er ordnet kurze Tastendrücke über eine gemeinsame Namensregel zu, erlaubt Ausnahmen
+und kann abhängig von Bedingungen einzelne Tasten oder alle Ziele wechseln.
+Für **HAVUOpenWebif** genügt die Receiver-Auswahl zur Erkennung anhand der Keycodes;
+mehrdeutige Tasten wie TV und Videotext erhalten ein explizites Ziel.
+Geprüfte Basis: **HAVUOpenWebif 1.1.0**, Commit `f20b23d74b6b` (Quellcodeprüfung
+und lokale Blueprint-Tests; noch kein Test am Receiver). Mit anderen oder neueren
+Versionen kann die Zuordnung nicht mehr funktionieren. Details zum Prüfstand
+stehen in der [Dokumentation](DOKUMENTATION.md#automatische-erkennung-für-havuopenwebif).
+Alternative Ziele lassen sich über Tasten-, Entitäts- und Aktionsauswahl einrichten,
+auch für Media Player, Schalter, Skripte, Szenen, Lichter und weitere steuerbare
+Entitäten. Einzelne Tasten können dabei auch deaktiviert werden.
+Die Zielauswahl lässt sich nach Entitätstyp eingrenzen und im Entitätsfeld per
+Freitext durchsuchen. Entität und ungefilterte Aktionsliste stehen im selben Dialog.
+Eine zum Ziel passende Aktion und deren Geräteunterstützung prüft der Benutzer.
+
 In einer neuen Automation den Auslöser **Ereignis empfangen** wählen, die gewünschte
 Tasten-Entität auswählen und dann den Ereignistyp festlegen:
 

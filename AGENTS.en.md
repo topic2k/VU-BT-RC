@@ -68,6 +68,12 @@ Do not implement or document these buttons as working.
 
 ## Documentation
 
+For the blueprint's HAVUOpenWebif connection, document the verified version,
+exact commit and actual verification scope in both languages. Do not describe
+source review and simulated tests as receiver testing. Mention possible
+incompatibility with other/newer versions; when changing the verification baseline,
+update blueprint descriptions and the test reference together as well.
+
 `README.md` contains the current, concise user documentation for GitHub and HACS.
 Detailed setup and reference information belongs in `DOKUMENTATION.md`.
 `CHANGELOG.md` contains only version history. Do not duplicate the changelog in
@@ -88,14 +94,47 @@ The README:
 - Removes completed items from future-development lists.
 - Does not contain a historical version list.
 
+## Branches, approval and releases
+
+- Implement changes on `develop` first, or on a new working branch when needed;
+  do not make changes or commits directly on `main`.
+- Merge changes into `main` exclusively through a pull request and only after
+  explicit approval from the user.
+- Create a new release only when explicitly instructed by the user.
+  Approval of changes or a pull request does not authorize a release.
+- The versioning rules below do not authorize automatic publication.
+
 ## Versioning
 
-Until the first publication, additions remain part of version 1.0.0; update the
-initial release entry in both changelogs. After the first publication:
-
-User-visible changes require a manifest version increase and changelog update.
-Do not create artificial releases for tiny internal changes. Documentation-only
-changes increase only the integration's patch version.
+- When making changes on `develop` or a working branch, automatically increase
+  the version without a separate request, based on the entire unpublished scope
+  since the last stable version: patch for fixes, internal changes and
+  documentation-only changes, minor for backward-compatible new features,
+  major for incompatible changes.
+- Development builds use `X.Y.Z-dev.N`, starting with `dev.1`, for example
+  `1.1.0-dev.1`. Increment the counter for further completed changes to the same
+  target version; restart at `dev.1` when the target version increases.
+  Do not assign a new version for every individual file edit.
+- `version` in `manifest.json`, `INTEGRATION_VERSION` and the newest entry in
+  both changelogs must match, including the development suffix. Explicitly label
+  the changelog entry as an unpublished development version and update it for
+  further changes to the same target version.
+- Immediately before each pull request into `main`, fetch the current remote
+  state of `main`, tags and published releases. Recalculate the next appropriate
+  version from the latest stable release and the entire proposed scope of changes.
+  Account for intervening version increases from other branches or commits;
+  do not reuse a published version or one already assigned on `main`, and do not
+  decrease the version.
+- On the working branch, remove the entire `-dev.N` suffix and synchronize the
+  manifest, `INTEGRATION_VERSION`, both changelogs and their tables of contents.
+  Keep the entry labelled unpublished until publication, but no longer label it
+  as a development version. Then rerun the checks. This preparation is incomplete
+  without an up-to-date comparison against the remote state.
+- If `main` or the release baseline changes while a pull request is open, repeat
+  the version comparison before merging and make any adjustments on the source
+  branch. Merge only after user approval. A version without a development suffix
+  or a merge does not authorize automatic tags or releases; an explicit release
+  instruction is still required.
 
 ## Development rules
 

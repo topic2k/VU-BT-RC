@@ -5,6 +5,8 @@
 ## Inhaltsverzeichnis
 
 - [Repository](#repository)
+- [Entwicklerversionen](#entwicklerversionen)
+- [Version vor dem Pull Request](#version-vor-dem-pull-request)
 - [Prüfungen](#prüfungen)
 - [Release veröffentlichen](#release-veröffentlichen)
 - [HACS](#hacs)
@@ -28,6 +30,50 @@ Das Projekt steht unter der [MIT-Lizenz](LICENSE).
 
 `documentation`, `issue_tracker` und `codeowners` im Integrationsmanifest
 verweisen auf dieses Repository und `@topic2k`.
+
+## Entwicklerversionen
+
+Änderungen entstehen auf `develop` oder einem Arbeitsbranch. Die Version wird
+dabei automatisch anhand aller Änderungen seit der letzten stabilen Version
+erhöht: Patch für Korrekturen, interne Änderungen und Dokumentation, Minor für
+rückwärtskompatible neue Funktionen, Major für inkompatible Änderungen.
+Entwicklungsstände tragen das Suffix `-dev.N`, zum Beispiel `1.1.0-dev.1`.
+Weitere abgeschlossene Änderungen derselben Zielversion erhöhen den Zähler;
+bei einer höheren Zielversion beginnt er wieder bei 1.
+
+Manifest, `INTEGRATION_VERSION` und beide Changelogs verwenden dieselbe vollständige
+Version. Die Changelogs kennzeichnen sie als unveröffentlicht. Das Format verwendet
+SemVer mit einer Vorabversionskennung, wie von den
+[Home-Assistant-Manifestregeln](https://developers.home-assistant.io/docs/creating_integration_manifest/#version)
+unterstützt.
+
+Änderungen gelangen ausschließlich nach Nutzerfreigabe per Pull Request nach
+`main`. Das Entwicklungssuffix wird unmittelbar vor dem Pull Request entfernt.
+Eine Merge-Freigabe erlaubt kein Release.
+
+## Version vor dem Pull Request
+
+1. Unmittelbar vor einem Pull Request nach `main` Remote-Branches und Tags
+   aktualisieren sowie die veröffentlichten Releases auf GitHub prüfen. Lokale
+   Versionsangaben oder Tags allein reichen für diesen Abgleich nicht aus.
+2. Ausgehend vom letzten stabilen Release und dem gesamten vorgesehenen
+   Änderungsumfang die nächste passende Patch-, Minor- oder Major-Version
+   bestimmen. Versionsanhebungen durch andere Branches oder Commits seit Beginn
+   der Arbeit berücksichtigen. Die Zielversion darf weder bereits veröffentlicht
+   noch auf `main` vergeben sein und darf keine Versionsabsenkung verursachen.
+3. Auf dem Quellbranch die ermittelte Version ohne `-dev.N` in Manifest,
+   `INTEGRATION_VERSION` und beiden Changelogs setzen. Inhaltsverzeichnisse
+   anpassen und den Eintrag als unveröffentlicht kennzeichnen; nur die
+   Kennzeichnung als Entwicklerversion entfällt. Veröffentlichte Historie erhalten.
+4. Die [Prüfungen](#prüfungen) erneut ausführen und die Versionsanpassung im
+   Pull Request mitführen. Ohne aktuellen Remote-Abgleich ist die Vorbereitung
+   nicht abgeschlossen.
+5. Ändert sich `main` oder die Release-Basis während des offenen Pull Requests,
+   den Abgleich vor dem Merge wiederholen und nötige Änderungen im Quellbranch
+   vornehmen. Erst nach Nutzerfreigabe mergen.
+
+Dieser Ablauf erstellt weder einen Tag noch ein Release. Auch eine Version ohne
+Entwicklungssuffix bleibt bis zur ausdrücklichen Release-Anweisung unveröffentlicht.
 
 ## Prüfungen
 
@@ -63,18 +109,22 @@ Tests mit simuliertem Home Assistant und BlueZ ersetzen diese Hardwaretests nich
 
 ## Release veröffentlichen
 
-1. Den geprüften Projektstand lokal committen, sofern noch Änderungen offen sind.
-2. `main` zum eingerichteten Remote `origin` übertragen:
+Voraussetzung ist eine ausdrückliche Release-Anweisung des Nutzers. Dies gilt
+auch für Release-Entwürfe und Release-Tags.
 
-   ```sh
-   git push -u origin main
-   ```
+1. Die zu veröffentlichende Version und ihren Commit auf `main` prüfen. Bei
+   noch ausstehenden Änderungen den Ablauf unter
+   [Version vor dem Pull Request](#version-vor-dem-pull-request) durchlaufen.
+2. Im Rahmen der beauftragten Veröffentlichung die Kennzeichnung als
+   unveröffentlicht in beiden Changelogs entfernen. Auch diese Änderung auf einem
+   Arbeitsbranch vorbereiten und nach Nutzerfreigabe per Pull Request übernehmen;
+   dabei den Versionsabgleich erneut durchführen.
 
 3. Die GitHub-Actions-Prüfungen für den zu veröffentlichenden Commit erfolgreich
    abschließen lassen. Den Hardwaretest aus dem Abschnitt [Prüfungen](#prüfungen)
    durchführen und ausstehende Testhinweise in beiden README-Fassungen anhand
    des tatsächlichen Ergebnisses aktualisieren.
-4. Den geprüften Commit markieren und den Tag übertragen:
+4. Den geprüften Commit auf `main` markieren und den Tag übertragen:
 
    ```sh
    git tag -a vX.Y.Z -m "Release X.Y.Z"

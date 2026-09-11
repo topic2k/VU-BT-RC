@@ -4,10 +4,33 @@
 
 ## Contents
 
+- [1.1.0](#110)
 - [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.1.0
+
+- Added German and English blueprints to map short key presses in one
+  automation. HAVUOpenWebif receivers are mapped automatically using Enigma2
+  keycodes; target prefixes and explicit mappings are also supported.
+  Ambiguous matches require an explicit target.
+- Conditions can redirect individual keys or switch the entire target profile.
+  Alternative targets support buttons, media players, switches, scripts,
+  scenes, lights, fans, covers and helpers.
+- Added entity type filtering and text search with a shared action list in
+  the same dialog. Action data and disabling individual keys are configurable.
+  Users check support on their particular device.
+- Missing, unavailable and action-domain-mismatched targets are skipped.
+  Added setup documentation and automated blueprint tests.
+- Reference: HAVUOpenWebif 1.1.0, commit
+  `f20b23d74b6b63f343dd42d2177dec22df068d76`. Verified through source review
+  and local simulation; no confirmed receiver test. Other or newer
+  HAVUOpenWebif versions may break the mapping.
+- Documented development versioning, version checks before pull requests,
+  authorized merges into main and explicitly requested releases in both
+  languages.
 
 ## 1.0.3
 

@@ -130,7 +130,7 @@ class LocalizationTest(unittest.TestCase):
                         self.assertIn(target[1:], anchors)
                     else:
                         self.assertTrue((ROOT / target.split("#")[0]).exists())
-        versions = lambda name: re.findall(r"^## (\d+\.\d+\.\d+)", (ROOT / name).read_text(encoding="utf-8"), re.M)
+        versions = lambda name: re.findall(r"^## (\d+\.\d+\.\d+(?:-dev\.[1-9]\d*)?)$", (ROOT / name).read_text(encoding="utf-8"), re.M)
         self.assertEqual(versions("CHANGELOG.md"), versions("CHANGELOG.en.md"))
         manifest = json.loads((COMPONENT / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(versions("CHANGELOG.md")[0], manifest["version"])
