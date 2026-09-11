@@ -91,6 +91,26 @@ class LocalizationTest(unittest.TestCase):
         entity._handle(data)
         self.assertEqual(entity.triggered[1]["command_label"], "Volume +")
 
+    def test_volume_and_channel_entity_names_generate_distinct_object_ids(self):
+        expected_names = {
+            "de": {
+                "volume_up": "Lautstärke Plus",
+                "volume_down": "Lautstärke Minus",
+                "channel_up": "Kanal Plus",
+                "channel_down": "Kanal Minus",
+            },
+            "en": {
+                "volume_up": "Volume up",
+                "volume_down": "Volume down",
+                "channel_up": "Channel up",
+                "channel_down": "Channel down",
+            },
+        }
+        for language, names in expected_names.items():
+            with self.subTest(language=language):
+                translated = catalog(language)["entity"]["event"]
+                self.assertEqual(names, {key: translated[key]["name"] for key in names})
+
     def test_documentation_pairs_links_and_release_versions(self):
         german = {p.name for p in ROOT.glob("*.md") if not p.name.endswith((".en.md", ".de.md"))}
         for name in german:

@@ -181,7 +181,7 @@
         }
       },
       "volume_up": {
-        "name": "Volume +",
+        "name": "Volume up",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -195,7 +195,7 @@
         }
       },
       "volume_down": {
-        "name": "Volume -",
+        "name": "Volume down",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -209,7 +209,7 @@
         }
       },
       "channel_up": {
-        "name": "Channel +",
+        "name": "Channel up",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -223,7 +223,7 @@
         }
       },
       "channel_down": {
-        "name": "Channel -",
+        "name": "Channel down",
         "state_attributes": {
           "event_type": {
             "state": {

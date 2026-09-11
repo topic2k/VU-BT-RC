@@ -181,7 +181,7 @@
         }
       },
       "volume_up": {
-        "name": "Lautstärke +",
+        "name": "Lautstärke Plus",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -195,7 +195,7 @@
         }
       },
       "volume_down": {
-        "name": "Lautstärke -",
+        "name": "Lautstärke Minus",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -209,7 +209,7 @@
         }
       },
       "channel_up": {
-        "name": "Kanal +",
+        "name": "Kanal Plus",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -223,7 +223,7 @@
         }
       },
       "channel_down": {
-        "name": "Kanal -",
+        "name": "Kanal Minus",
         "state_attributes": {
           "event_type": {
             "state": {

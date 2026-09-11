@@ -302,6 +302,12 @@ Die Entity-ID kann je nach Systemsprache bei der Einrichtung und eigener
 Benennung abweichen. In diesem Fall im Beispiel `event.vu_bluetooth_fernbedienung_ok` durch die
 Entity-ID der eigenen Entität **OK** ersetzen.
 
+Bei einer deutschen Einrichtung erhalten Lautstärke und Kanal eindeutige,
+automatisch erzeugte Namen wie `..._lautstarke_plus`, `..._lautstarke_minus`,
+`..._kanal_plus` und `..._kanal_minus`. Bereits vorhandene Entitäten behalten
+ihre Entity-ID; diese können bei Bedarf in den Entitätseinstellungen umbenannt
+werden.
+
 ## Kurz- und Langdruck
 
 Die Dauer wird mit einer monotonen Uhr zwischen `EV_KEY` Down und Up gemessen. Nach

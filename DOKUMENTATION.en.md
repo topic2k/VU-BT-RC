@@ -281,6 +281,11 @@ mode: single
 The entity ID can differ depending on the system language during setup and any
 custom names. Replace `event.vu_bluetooth_remote_ok` with your **OK** entity ID.
 
+For a German setup, volume and channel buttons receive distinct generated names,
+such as `..._lautstarke_plus`, `..._lautstarke_minus`, `..._kanal_plus` and
+`..._kanal_minus`. Existing entities keep their entity IDs; rename them in the
+entity settings if desired.
+
 ## Short and long presses
 
 Duration is measured with a monotonic clock between `EV_KEY` down and up. An

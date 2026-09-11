@@ -4,9 +4,15 @@
 
 ## Contents
 
+- [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.0.3
+
+- Added distinct default names for the Volume up/down and Channel up/down event
+  entities so Home Assistant does not need to add numeric suffixes such as `_2`.
 
 ## 1.0.2
 

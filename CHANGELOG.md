@@ -4,9 +4,16 @@
 
 ## Inhaltsverzeichnis
 
+- [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.0.3
+
+- Eindeutige Standardnamen für die Event-Entitäten Lautstärke Plus/Minus und
+  Kanal Plus/Minus ergänzt, damit Home Assistant keine numerischen Suffixe wie
+  `_2` erzeugen muss.
 
 ## 1.0.2
 
