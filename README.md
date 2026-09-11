@@ -83,6 +83,11 @@ die Tasten als Event-Entitäten und fünf Diagnoseanzeigen.
 
 ## Automationen
 
+[Deutschen Blueprint in Home Assistant importieren](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Ftopic2k%2FVU-BT-RC%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fvuplus_hid_raw%2Fshort_press_buttons.yaml)
+
+Optionale Update-Hinweise ermöglicht [Blueprints Updater](https://github.com/luuquangvu/blueprints-updater).
+Siehe [Blueprint-Updates](DOKUMENTATION.md#blueprint-updates). Ein HACS-Update der Integration aktualisiert importierte Blueprints nicht.
+
 Für die Weiterleitung an die `button.*`-Entitäten eines SAT-Receivers gibt es einen
 [Blueprint für die gesamte Fernbedienung](DOKUMENTATION.md#blueprint-kurze-tastendrücke-an-receiver-buttons).
 Er ordnet kurze Tastendrücke über eine gemeinsame Namensregel zu, erlaubt Ausnahmen

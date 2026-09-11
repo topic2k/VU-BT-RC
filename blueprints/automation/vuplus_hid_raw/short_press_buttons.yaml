@@ -1,6 +1,8 @@
 blueprint:
   name: "VU+: kurze Tastendrücke zuordnen"
+  source_url: https://github.com/topic2k/VU-BT-RC/blob/main/blueprints/automation/vuplus_hid_raw/short_press_buttons.yaml
   description: >-
+    Blueprint-Version: 1.1.1.
     Eine Automation für alle Tasten der VU+-Fernbedienung. Das Ziel ergibt sich
     bei HAVUOpenWebif automatisch aus dem Receiver und den Keycodes, sonst
     aus Präfix + command (z. B. button.receiver_ + ok). Abweichende Namen und
@@ -466,7 +468,6 @@ actions:
          and target_action is string
          and target_action.split('.')[0] == target_entity.split('.')[0]
          and target_action.split('.') | length == 2
-         and has_service(target_action.split('.')[0], target_action.split('.')[1])
          and target_data is mapping }}
   - action: "{{ target_action }}"
     target:

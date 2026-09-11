@@ -4,11 +4,21 @@
 
 ## Inhaltsverzeichnis
 
+- [1.1.1](#111)
 - [1.1.0](#110)
 - [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.1.1
+
+- Feste Blueprint-Quelladressen, sichtbare Versionen und sprachspezifische Import-Links ergänzt. Optionale Update-Hinweise mit Blueprints Updater und Umstellung vorhandener lokaler Dateien dokumentiert.
+
+- Template-Abbruch im Blueprint durch die nicht verfügbare Funktion
+  `has_service` behoben. Fehlerhafte Test-Nachbildung entfernt, damit die
+  Template-Tests diesen Fehler erkennen. Nicht registrierte Aktionen werden
+  beim Aufruf von Home Assistant gemeldet.
 
 ## 1.1.0
 

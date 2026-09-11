@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant
 
 _LOGGER = logging.getLogger(__name__)
 DOMAIN = "vuplus_hid_raw"
-INTEGRATION_VERSION = "1.1.0"
+INTEGRATION_VERSION = "1.1.1"
 PLATFORMS = [Platform.EVENT, Platform.BINARY_SENSOR]
 DEFAULT_DEVICE_NAME = "VUPLUS-BLE-RCU Keyboard"
 DEFAULT_LONG_PRESS_MS = 500

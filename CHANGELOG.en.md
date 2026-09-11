@@ -4,11 +4,20 @@
 
 ## Contents
 
+- [1.1.1](#111)
 - [1.1.0](#110)
 - [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.1.1
+
+- Added stable blueprint source URLs, visible versions and language-specific import links. Documented optional update notices with Blueprints Updater and migration of existing local files.
+
+- Fixed blueprint template failure caused by the unavailable `has_service`
+  function. Removed the incorrect test helper so template tests reproduce
+  this error. Home Assistant reports unregistered actions when invoked.
 
 ## 1.1.0
 
