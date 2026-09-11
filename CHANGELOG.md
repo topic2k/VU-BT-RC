@@ -4,10 +4,33 @@
 
 ## Inhaltsverzeichnis
 
+- [1.1.0](#110)
 - [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.1.0
+
+- Deutschen und englischen Blueprint ergänzt: Eine Automation ordnet kurze
+  Tastendrücke den Zielen zu. HAVUOpenWebif-Receiver werden anhand von Enigma2-
+  Keycodes automatisch zugeordnet; alternativ sind Zielpräfixe und explizite
+  Zuordnungen möglich. Mehrdeutige Treffer benötigen ein explizites Ziel.
+- Bedingungen können einzelne Tasten umleiten oder das gesamte Zielprofil
+  wechseln. Alternative Ziele unterstützen Buttons, Media Player, Schalter,
+  Skripte, Szenen, Lichter, Ventilatoren, Rollläden und Helfer.
+- Entitätsauswahl mit Typfilter und Freitextsuche sowie eine gemeinsame
+  Aktionsliste im selben Dialog ergänzt. Aktionsdaten und das Deaktivieren
+  einzelner Tasten sind konfigurierbar. Benutzer prüfen die Geräteunterstützung.
+- Fehlende, nicht verfügbare und nicht zum Aktionstyp passende Ziele werden
+  übersprungen. Anleitung und automatisierte Blueprint-Prüfungen ergänzt.
+- Referenz: HAVUOpenWebif 1.1.0, Commit
+  `f20b23d74b6b63f343dd42d2177dec22df068d76`. Geprüft durch Quellcodeprüfung
+  und lokale Simulation; kein bestätigter Receiver-Test. Andere oder neuere
+  HAVUOpenWebif-Versionen können die Zuordnung beeinträchtigen.
+- Projekt- und Release-Vorgaben für Entwicklungsversionsnummern, Versionsabgleich
+  vor Pull Requests, freigegebene Übernahme nach main und beauftragte Releases
+  in beiden Sprachen dokumentiert.
 
 ## 1.0.3
 

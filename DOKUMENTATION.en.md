@@ -16,6 +16,7 @@
 - [Unpairing after deletion](#unpairing-after-deletion)
 - [Events](#events)
 - [Automations](#automations)
+- [Blueprint: short presses to receiver buttons](#blueprint-short-presses-to-receiver-buttons)
 - [Short and long presses](#short-and-long-presses)
 - [Reconnection](#reconnection)
 - [Button mapping](#button-mapping)
@@ -285,6 +286,213 @@ For a German setup, volume and channel buttons receive distinct generated names,
 such as `..._lautstarke_plus`, `..._lautstarke_minus`, `..._kanal_plus` and
 `..._kanal_minus`. Existing entities keep their entity IDs; rename them in the
 entity settings if desired.
+
+## Blueprint: short presses to receiver buttons
+
+The [English blueprint](blueprints/automation/vuplus_hid_raw/short_press_buttons.en.yaml)
+replaces individual short-press automations with one automation for the entire remote.
+The [German version](blueprints/automation/vuplus_hid_raw/short_press_buttons.yaml)
+has identical functionality. Both require Home Assistant 2026.9.0 or later.
+
+### Setup
+
+1. Copy the preferred YAML file to
+   `/config/blueprints/automation/vuplus_hid_raw/`, creating the directory if needed.
+   HACS does not install these blueprint files alongside the integration.
+2. Open the blueprint under **Settings → Automations & scenes → Blueprints**
+   and create an automation. Reload the blueprint after updating its file.
+3. Select our remote device. This covers its event entities together, regardless
+   of their entity IDs.
+4. For HAVUOpenWebif, select the **HAVUOpenWebif receiver**; the prefix can stay
+   empty. Automatic detection is explained below. For other integrations, enter
+   a **Default target prefix**, for example `button.receiver_`. This produces
+   targets such as `button.receiver_ok` and `button.receiver_up`.
+5. Add exceptions under **Different key names** or **Explicit default targets**.
+   Save and test with one key first. Disable the previous short-press automations
+   to avoid duplicate actions.
+
+Mapping uses the language-independent `command` attribute, rather than the remote
+entity's display name or entity ID. Prefix mapping does not match similar names
+approximately: the receiver button's exact entity ID matters. The following
+prefix and explicit target examples are placeholders.
+
+### Automatic detection for HAVUOpenWebif
+
+**Verified baseline: HAVUOpenWebif 1.1.0**, as declared in the
+[manifest](https://github.com/howeydium/HAVUOpenWebif/blob/f20b23d74b6b63f343dd42d2177dec22df068d76/custom_components/havuopenwebif/manifest.json)
+at commit `f20b23d74b6b63f343dd42d2177dec22df068d76`.
+Verification covers the key and attribute definitions in the source code and our
+blueprint mapping through local YAML/Jinja tests with simulated entities.
+Import and functional testing with this integration on an actual receiver are
+still pending; this does not certify a fully tested device combination.
+
+**Mapping may partially or completely stop working with other or newer
+HAVUOpenWebif versions.** In particular, changes to keycodes, attributes or device
+assignments may affect it. There is no automatic version lock or compatibility
+promise for other versions. Recheck mappings after an update. This caveat applies
+to the blueprint's HAVUOpenWebif connection; reading the Bluetooth remote is
+independent of it.
+
+Selecting the receiver device detects its `button.*` entities by their `keycode`
+attribute. Language, device names and renamed entity IDs do not affect detection.
+Only HAVUOpenWebif buttons on the selected device qualify. No prefix or translated
+key names are needed. **Explicit default targets** still take precedence,
+including disabling individual keys.
+
+The blueprint maps key functions to the Enigma2 codes in
+[HAVUOpenWebif](https://github.com/howeydium/HAVUOpenWebif/blob/f20b23d74b6b63f343dd42d2177dec22df068d76/custom_components/havuopenwebif/const.py).
+It does not forward our local evdev codes directly: for example, OK uses `352`,
+Exit `174`, Stop `128` and PVR `366`. The buttons send these codes through
+[OpenWebIf](https://github.com/howeydium/HAVUOpenWebif/blob/f20b23d74b6b63f343dd42d2177dec22df068d76/custom_components/havuopenwebif/button.py).
+
+In the inspected revision, `tv`/`tvradio` share code `377`, while
+`text`/`text_teletext` share `388`. Multiple matching buttons cause a key to be
+skipped. Specify the desired entity under **Explicit default targets**, for example:
+
+```yaml
+tv: button.my_receiver_tv
+teletext: button.my_receiver_teletext
+```
+
+Replace these two entity IDs with your actual IDs. The codes and detection are
+tested; receiver behaviour still depends on its firmware, particularly PVR,
+which HAVUOpenWebif labels as best effort. There is no unambiguous equivalent for
+`speak`, `left_0` or `right_0` in the inspected key set. These remain unassigned
+unless explicitly mapped. Missing or ambiguous matches do not fall back to the
+prefix rule.
+
+### Mapping by names and explicit targets
+
+**Different key names** change only the suffix after the prefix:
+
+```yaml
+volume_up: volume_plus
+volume_down: volume_minus
+stb_power: power
+"1": digit_1
+```
+
+**Explicit default targets** take precedence over the prefix and suffix:
+
+```yaml
+ok: button.receiver_enter
+mute: button.amplifier_mute
+speak: ""
+```
+
+An empty value `""` disables that key. Without a selected receiver, an empty prefix disables the naming rule,
+so only explicit targets apply. Always quote numeric keys (`"0"` through `"9"`).
+
+Available `command` values:
+
+```text
+ok, up, down, left, right, volume_up, volume_down, channel_up, channel_down,
+menu, pvr, mute, rewind, forward, play, pause, record, stop, radio, help,
+stb_power, red, green, yellow, blue, 0–9, epg, audio, teletext, subtitle,
+speak, tv, exit, left_0, right_0
+```
+
+### Conditional targets
+
+Turn on **Enable alternative mapping** and use the condition editor to check,
+for example, whether `input_boolean.cinema_mode` is `on`. All conditions must match;
+OR groups are supported. An empty condition list always matches while alternative
+mapping is enabled.
+
+To **redirect volume keys only**, leave the alternative receiver and prefix empty.
+Under **Explicit alternative targets**, add entries and use the selectors to
+choose the **Key**, the type and entity under **Select target by type**, and,
+if needed, the **Action** for each:
+
+1. Choose a type such as **Media player**, **Switch** or **Script**.
+2. Enter a name or entity ID in the entity field below, such as `living_room`
+   or `media_player.amplifier`. The built-in text search further narrows the list
+   within the selected type.
+3. Select the desired result. Search text only helps with selection; the specific
+   target entity is saved, not a search pattern for subsequent calls.
+
+Text search is provided by Home Assistant's
+[entity picker](https://github.com/home-assistant/frontend/blob/dev/src/data/entity/entity_picker.ts).
+No separate text field is needed. Each entry has exactly one target selection.
+When switching types, saved targets belonging to other, currently inactive
+types are not executed. An entry without a complete target selection and
+without disabling the key leaves the default mapping unchanged.
+
+| Key | Target entity (example) | Action |
+| --- | --- | --- |
+| Volume up | `media_player.amplifier` | Media player: Volume up |
+| Volume down | `media_player.amplifier` | Media player: Volume down |
+| Red | `switch.socket` | Switch: toggle |
+| Green | `script.cinema_mode` | Start script |
+| Blue | `scene.cinema` | Activate scene |
+
+The selector includes `button`, `input_button`, `media_player`, `switch`,
+`input_boolean`, `script`, `scene`, `light`, `fan` and `cover`, including other
+integrations. Without a selected action, buttons are pressed, scripts are started,
+scenes activated and media players toggle play/pause. Switches, toggle helpers,
+lights, fans and covers toggle. Select an action explicitly for volume, power or
+other functions. Entity and action selectors share the same dialog without an additional
+subdialog. Entity selection remains filtered by type; the shared action list
+shows all offered actions. Choose an action matching the target type and adjust
+it after switching types if needed. Actions from another domain are skipped
+during execution. The particular device's capabilities are
+not checked; users must check or try which actions it supports. Device errors
+appear in the automation trace.
+
+Use **Action data (optional, YAML)** for fixed parameters: for example,
+`is_volume_muted: true` for `media_player.volume_mute`, `brightness_pct: 30` for
+`light.turn_on`, or `source: HDMI 1` for `media_player.select_source`.
+With `script.turn_on`, script parameters go under `variables`. Select a script
+for complex sequences. Scripts start without waiting for completion; their
+subsequent execution follows their own mode.
+
+**Disable key** suppresses the selected key while the alternative conditions match;
+no target entity is needed. This switch takes precedence over a selected target.
+An entry without a target and without disabling the key changes nothing. Removing
+an entry removes its override.
+
+If a key is selected more than once, the last complete entry wins.
+
+All other keys retain their default mapping. To use **another HAVUOpenWebif
+receiver for all keys**, select the **Alternative HAVUOpenWebif receiver**. This
+replaces the entire target profile without inheriting explicit default targets.
+Add TV/teletext exceptions to **Explicit alternative targets** if needed.
+For other integrations, enter an alternative prefix such as `button.bedroom_receiver_`. In this
+case only that prefix, the shared key aliases and explicit alternative targets
+apply. Explicit default targets are not inherited.
+
+Conditions may also depend on the key. For example, a template condition can use
+`{{ command | string in ['volume_up', 'volume_down', 'mute'] }}` combined with a
+state condition. Each blueprint provides a default profile and one conditional
+alternative profile. For more profiles, create multiple automations without a
+default receiver, with empty
+default prefixes and no explicit default targets. Their alternative conditions
+must be mutually exclusive so each key press is forwarded by only one automation.
+
+### Behaviour and verification
+
+- Only `press_end` calls the selected action once. Automatically detected receiver
+  buttons and explicit default buttons use `button.press`. Long presses, initial presses and
+  repeats are not forwarded.
+- Missing, unavailable or explicitly disabled targets are skipped. An existing
+  button in state `unknown` can be pressed; this is normal before its first use.
+  An unavailable alternative target does not fall back to the default receiver.
+- Presses run in order (`queued`, up to 50 active/waiting runs). Conditions are
+  evaluated when each run is processed.
+- The automation trace exposes `command`, `target_receiver`, `target_prefix`, `target_buttons` and
+  `target_button` to inspect the mapping. `target_entity`, `target_action` and
+  `target_data` show the final call. Test with a physical short press;
+  **Run actions** does not provide `trigger` data.
+- Actions that do not match the entity type or are not registered are skipped.
+  Prefixes and explicit default targets are button mappings; configure
+  other entity types using the new selectors.
+- **TV Power** and **AV** remain unsupported through evdev.
+
+YAML and Jinja tests verify the templates; import and functional testing with the
+actual receiver integration are still pending. The trigger follows the
+[Home Assistant 2026.9 event trigger](https://github.com/home-assistant/core/blob/2026.9.0/homeassistant/components/event/trigger.py),
+and its input fields use the documented
+[blueprint selectors](https://www.home-assistant.io/docs/blueprint/selectors/).
 
 ## Short and long presses
 

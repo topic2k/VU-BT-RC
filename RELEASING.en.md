@@ -5,6 +5,8 @@
 ## Contents
 
 - [Repository](#repository)
+- [Development versions](#development-versions)
+- [Version before the pull request](#version-before-the-pull-request)
 - [Checks](#checks)
 - [Publish a release](#publish-a-release)
 - [HACS](#hacs)
@@ -27,6 +29,47 @@ The project uses the [MIT License](LICENSE).
 
 The integration manifest's `documentation`, `issue_tracker` and `codeowners`
 refer to this repository and `@topic2k`.
+
+## Development versions
+
+Make changes on `develop` or a working branch. Automatically increase the version
+based on all changes since the last stable version: patch for fixes, internal
+changes and documentation, minor for backward-compatible new features, major
+for incompatible changes. Development builds use the `-dev.N` suffix, for example
+`1.1.0-dev.1`. Further completed changes to the same target version increment
+the counter; restart at 1 when the target version increases.
+
+The manifest, `INTEGRATION_VERSION` and both changelogs use the same full version.
+Label it as unpublished in the changelogs. This format uses SemVer with a
+prerelease identifier, supported by the
+[Home Assistant manifest rules](https://developers.home-assistant.io/docs/creating_integration_manifest/#version).
+
+Merge changes into `main` only through a pull request after user approval.
+Remove the development suffix immediately before the pull request.
+Merge approval does not authorize a release.
+
+## Version before the pull request
+
+1. Immediately before a pull request into `main`, refresh remote branches and
+   tags and check published releases on GitHub. Local versions or tags alone
+   are not sufficient for this comparison.
+2. Determine the next appropriate patch, minor or major version from the latest
+   stable release and the entire proposed scope of changes. Account for version
+   increases from other branches or commits since work began. The target version
+   must not have been published or assigned on `main` already, and must not
+   cause a version decrease.
+3. On the source branch, set the chosen version without `-dev.N` in the manifest,
+   `INTEGRATION_VERSION` and both changelogs. Update the tables of contents and
+   label the entry as unpublished; remove only its development-version label.
+   Preserve published history.
+4. Rerun the [checks](#checks) and include the version adjustment in the pull
+   request. Preparation is incomplete without a current remote comparison.
+5. If `main` or the release baseline changes while the pull request is open,
+   repeat the comparison before merging and make any necessary changes on the
+   source branch. Merge only after user approval.
+
+This process creates neither a tag nor a release. A version without a development
+suffix remains unpublished until an explicit release instruction is given.
 
 ## Checks
 
@@ -62,17 +105,19 @@ testing.
 
 ## Publish a release
 
-1. Commit the checked project state locally if changes are still pending.
-2. Push `main` to the configured remote `origin`:
+An explicit release instruction from the user is required. This also applies
+to release drafts and release tags.
 
-   ```sh
-   git push -u origin main
-   ```
+1. Check the version to be released and its commit on `main`. For any pending
+   changes, follow [Version before the pull request](#version-before-the-pull-request).
+2. As part of the requested publication, remove the unpublished label from both
+   changelogs. Prepare this change on a working branch too and merge it through
+   a pull request after user approval, repeating the version comparison.
 
 3. Wait for the GitHub Actions checks to pass for the commit being released.
    Complete the hardware tests under [Checks](#checks) and update the pending-test
    notes in both README versions based on the actual results.
-4. Tag the checked commit and push the tag:
+4. Tag the checked commit on `main` and push the tag:
 
    ```sh
    git tag -a vX.Y.Z -m "Release X.Y.Z"

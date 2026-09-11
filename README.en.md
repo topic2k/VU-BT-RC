@@ -80,6 +80,23 @@ diagnostic indicators.
 
 ## Automations
 
+To forward presses to a satellite receiver's `button.*` entities, use the
+[blueprint for the entire remote](DOKUMENTATION.en.md#blueprint-short-presses-to-receiver-buttons).
+It maps short presses using a shared naming rule, supports exceptions, and can
+redirect individual keys or all targets depending on conditions.
+For **HAVUOpenWebif**, selecting the receiver enables detection by keycode;
+ambiguous keys such as TV and teletext use explicit targets.
+Verified baseline: **HAVUOpenWebif 1.1.0**, commit `f20b23d74b6b` (source review
+and local blueprint tests; not yet tested on a receiver). Mapping may stop working
+with other or newer versions. See the
+[documentation](DOKUMENTATION.en.md#automatic-detection-for-havuopenwebif) for the verification scope.
+Alternative targets can be configured with key, entity and action selectors,
+including media players, switches, scripts, scenes, lights and other controllable
+entities. Individual keys can also be disabled.
+Target selection can be narrowed by entity type and searched by text in the
+entity field. Entity and unfiltered action list share the same dialog.
+Users choose an action matching the target and check support on their device.
+
 In a new automation, choose the **Event received** trigger, select the desired
 button entity and choose an event type:
 
