@@ -296,8 +296,9 @@ has identical functionality. Both require Home Assistant 2026.9.0 or later.
 
 ### Setup
 
-1. Copy the preferred YAML file to
-   `/config/blueprints/automation/vuplus_hid_raw/`, creating the directory if needed.
+1. Use the import link in the README, or import the [English blueprint](https://github.com/topic2k/VU-BT-RC/blob/main/blueprints/automation/vuplus_hid_raw/short_press_buttons.en.yaml)
+   under **Settings → Automations & scenes → Blueprints → Import blueprint**.
+   Alternatively, copy the YAML file to `/config/blueprints/automation/vuplus_hid_raw/`.
    HACS does not install these blueprint files alongside the integration.
 2. Open the blueprint under **Settings → Automations & scenes → Blueprints**
    and create an automation. Reload the blueprint after updating its file.
@@ -315,6 +316,41 @@ Mapping uses the language-independent `command` attribute, rather than the remot
 entity's display name or entity ID. Prefix mapping does not match similar names
 approximately: the receiver button's exact entity ID matters. The following
 prefix and explicit target examples are placeholders.
+
+### Blueprint updates
+
+Each language has its own stable `source_url` on `main` and a visible blueprint
+version in the description. Keep the existing local file path when updating:
+automations refer to that file. The HAVUOpenWebif reference version is separate.
+
+For a manual update, use **Re-import blueprint** in the blueprint's menu.
+Home Assistant overwrites the imported template; check the
+[changelog](CHANGELOG.en.md) for required input changes. See the
+[Home Assistant instructions](https://www.home-assistant.io/docs/automation/using_blueprints/#re-importing-a-blueprint).
+Updating our integration through HACS does not update the separate blueprint.
+
+For optional update notices:
+
+1. Install [Blueprints Updater](https://github.com/luuquangvu/blueprints-updater)
+   through HACS and configure it under **Settings → Devices & services**.
+2. Use its whitelist to track the installed language version of our blueprint.
+3. Initially leave automatic installation disabled. Available changes are shown
+   through an `update` entity; review and install them manually, with backup enabled.
+4. After adding a blueprint, reload the updater integration to refresh its list.
+
+The updater detects content changes; it does not depend on our version number.
+The source follows `main`, so changes become available after merging, even before
+creating a GitHub release. Development changes on `develop` are not offered.
+The updater is optional; the remote integration has no dependency on it.
+
+For an existing manually copied blueprint, replace the file once at its existing
+path with the current language version including `source_url`, then reload
+automations and the updater. Avoid a second import under a different path: it
+would not update automations that still reference the old file.
+
+Import, update detection and installation with Blueprints Updater have not yet
+been verified in a live Home Assistant installation. Local tests check source
+metadata, language links and template execution, not the external updater.
 
 ### Automatic detection for HAVUOpenWebif
 
@@ -483,7 +519,9 @@ must be mutually exclusive so each key press is forwarded by only one automation
   `target_button` to inspect the mapping. `target_entity`, `target_action` and
   `target_data` show the final call. Test with a physical short press;
   **Run actions** does not provide `trigger` data.
-- Actions that do not match the entity type or are not registered are skipped.
+- Actions that do not match the entity type are skipped. Home Assistant reports
+  unregistered actions as errors in the automation trace when invoked; the
+  template does not query the service registry.
   Prefixes and explicit default targets are button mappings; configure
   other entity types using the new selectors.
 - **TV Power** and **AV** remain unsupported through evdev.

@@ -1,6 +1,8 @@
 blueprint:
   name: 'VU+: map short presses to actions'
+  source_url: https://github.com/topic2k/VU-BT-RC/blob/main/blueprints/automation/vuplus_hid_raw/short_press_buttons.en.yaml
   description: >-
+    Blueprint version: 1.1.1.
     One automation for all VU+ remote keys. HAVUOpenWebif targets are detected automatically
     by receiver and keycode; other targets use prefix + command. Explicit targets override detection.
     Conditions can activate an alternative target profile. Alternative targets also support
@@ -471,7 +473,6 @@ actions:
          and target_action is string
          and target_action.split('.')[0] == target_entity.split('.')[0]
          and target_action.split('.') | length == 2
-         and has_service(target_action.split('.')[0], target_action.split('.')[1])
          and target_data is mapping }}
   - action: "{{ target_action }}"
     target:

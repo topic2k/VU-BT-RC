@@ -318,9 +318,10 @@ hat dieselbe Funktion. Beide benötigen Home Assistant ab 2026.9.0.
 
 ### Einrichtung
 
-1. Die gewünschte YAML-Datei nach
-   `/config/blueprints/automation/vuplus_hid_raw/` kopieren, den Ordner bei Bedarf
-   anlegen. HACS installiert diese Blueprint-Dateien nicht mit der Integration.
+1. Den Import-Link in der README nutzen oder den [deutschen Blueprint](https://github.com/topic2k/VU-BT-RC/blob/main/blueprints/automation/vuplus_hid_raw/short_press_buttons.yaml)
+   unter **Einstellungen → Automationen & Szenen → Blueprints → Blueprint importieren**
+   importieren. Alternativ die YAML-Datei nach `/config/blueprints/automation/vuplus_hid_raw/`
+   kopieren. HACS installiert diese Blueprint-Dateien nicht mit der Integration.
 2. Unter **Einstellungen → Automationen & Szenen → Blueprints** den Blueprint
    öffnen und eine Automation erstellen; bei einer aktualisierten Datei den
    Blueprint neu laden.
@@ -339,6 +340,44 @@ Die Zuordnung verwendet das sprachunabhängige Attribut `command`, nicht den
 Anzeigenamen oder die Entity-ID der Fernbedienung. Bei der Präfix-Zuordnung werden
 ähnlich aussehende Namen nicht unscharf gesucht: Es zählt die genaue Entity-ID des
 Ziel-Buttons. Folgende Präfix- und Einzelziel-Beispiele sind Platzhalter.
+
+### Blueprint-Updates
+
+Jede Sprachfassung besitzt eine feste `source_url` auf `main` und eine sichtbare
+Blueprint-Version in der Beschreibung. Beim Aktualisieren den bisherigen lokalen
+Dateipfad beibehalten: Automationen verweisen auf diese Datei. Die angegebene
+HAVUOpenWebif-Prüfversion ist davon unabhängig.
+
+Für ein manuelles Update im Menü des Blueprints **Blueprint erneut importieren**
+wählen. Home Assistant ersetzt die importierte Vorlage; erforderliche Anpassungen
+an Eingaben stehen im [Changelog](CHANGELOG.md). Siehe die
+[Home-Assistant-Anleitung](https://www.home-assistant.io/docs/automation/using_blueprints/#re-importing-a-blueprint).
+Ein HACS-Update unserer Integration aktualisiert den separaten Blueprint nicht.
+
+Für optionale Update-Hinweise:
+
+1. [Blueprints Updater](https://github.com/luuquangvu/blueprints-updater) über HACS
+   installieren und unter **Einstellungen → Geräte & Dienste** einrichten.
+2. Über dessen Whitelist die installierte Sprachfassung unseres Blueprints auswählen.
+3. Automatische Installation zunächst ausgeschaltet lassen. Verfügbare Änderungen
+   erscheinen über eine `update`-Entität; prüfen und manuell mit aktivierter
+   Sicherung installieren.
+4. Nach dem Hinzufügen eines Blueprints die Updater-Integration neu laden,
+   damit sie ihre Liste aktualisiert.
+
+Der Updater erkennt Inhaltsänderungen unabhängig von unserer Versionsnummer.
+Die Quelle folgt `main`: Änderungen stehen bereits nach dem Merge bereit, auch
+vor dem GitHub-Release. Entwicklungsänderungen auf `develop` werden nicht angeboten.
+Der Updater ist optional; unsere Fernbedienungsintegration benötigt ihn nicht.
+
+Bei einem bisher manuell kopierten Blueprint die Datei einmal am bisherigen Pfad
+durch die aktuelle Sprachfassung inklusive `source_url` ersetzen. Danach die
+Automationen und den Updater neu laden. Ein zweiter Import unter einem anderen
+Pfad aktualisiert keine Automationen, die noch auf die bisherige Datei verweisen.
+
+Import, Update-Erkennung und Installation mit Blueprints Updater sind noch nicht
+in einer laufenden Home-Assistant-Installation geprüft. Lokale Tests prüfen
+Quellmetadaten, Sprachlinks und Template-Ausführung, nicht den externen Updater.
 
 ### Automatische Erkennung für HAVUOpenWebif
 
@@ -515,7 +554,9 @@ ein Tastendruck nur eine Automation zur Weiterleitung bringt.
   `target_button` die ermittelte Zuordnung. `target_entity`, `target_action` und
   `target_data` zeigen den endgültigen Aufruf. Zum Testen die physische Taste kurz
   drücken; **Aktionen ausführen** stellt keine `trigger`-Daten bereit.
-- Nicht zum Zieltyp passende oder nicht registrierte Aktionen werden übersprungen.
+- Nicht zum Zieltyp passende Aktionen werden übersprungen. Nicht registrierte
+  Aktionen werden beim Aufruf von Home Assistant als Fehler in der Automationsspur
+  gemeldet; eine Service-Abfrage im Template findet nicht statt.
   Präfixe und explizite Standard-Ziele sind Button-Zuordnungen;
   andere Entitätstypen werden über die neuen Auswahlfelder eingerichtet.
 - **TV Power** und **AV** bleiben ohne Funktion über evdev.

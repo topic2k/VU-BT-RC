@@ -145,6 +145,19 @@ Prüfungen veröffentlichen. Bei weiteren Änderungen Ziel-Commit und zweisprach
 Release-Beschreibung aktualisieren. Ein Entwurf wird HACS-Nutzern nicht als
 veröffentlichte Version angeboten.
 
+Blueprint-Updates verwenden die feste `source_url` auf `main`. Blueprint-Änderungen
+erst übernehmen, wenn sie verteilt werden sollen: Updater können sie sofort nach
+dem Merge erkennen, ohne auf ein GitHub-Release zu warten. Dateinamen und
+Quelladressen stabil halten. Bei Blueprint-Änderungen die sichtbare Version in
+beiden Beschreibungen auf die Release-Version setzen (Entwicklungssuffix vor dem
+PR entfernen). Bei Releases ohne Blueprint-Änderungen die Blueprint-Version
+beibehalten, um unnötige Update-Hinweise zu vermeiden. Die HAVUOpenWebif-Prüfbasis
+separat pflegen.
+Import, Update-Erkennung und Installation nach Möglichkeit in Home Assistant mit
+Blueprints Updater testen; tatsächliche Ergebnisse dokumentieren und lokale
+Metadatentests nicht als vollständigen Integrationstest ausgeben. Der Updater
+bleibt optional.
+
 ## HACS
 
 `hacs.json` setzt Home Assistant **2026.9.0** als Mindestversion. Die Dateien der

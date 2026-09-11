@@ -136,6 +136,17 @@ the checked commit as its target. Publish the draft only after completing the
 checks. If further changes are made, update its target commit and bilingual
 release description. A draft is not offered to HACS users as a published version.
 
+Blueprint updates use the stable `source_url` on `main`. Merge blueprint changes
+only when ready for distribution: updater clients can detect them immediately,
+without waiting for a GitHub release. Keep filenames and source URLs stable.
+For blueprint changes, update the visible version in both descriptions to the
+release version (remove the development suffix before the PR). For releases
+without blueprint changes, retain the blueprint version to avoid unnecessary
+update notices. Keep the HAVUOpenWebif verification baseline separate.
+Test importing, detecting an update and applying it in Home Assistant with
+Blueprints Updater when available; record actual results rather than treating
+local metadata tests as an end-to-end test. The updater remains optional.
+
 ## HACS
 
 `hacs.json` sets **2026.9.0** as the minimum Home Assistant version. All integration

@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import ast
 import json
+import re
+from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -49,7 +51,7 @@ def target_row(command, entity_id):
 class BlueprintTest(unittest.TestCase):
     def run_blueprint(self, command="ok", event_type="press_end", entities=None,
                       device_members=None, keycodes=None, havu_entities=None,
-                      available_services=None, include_data=False, **inputs):
+                      include_data=False, **inputs):
         """Run the actual YAML's supported actions with simulated HA state helpers.
 
         This is a template/behaviour test, not HA's schema or execution engine.
@@ -82,7 +84,6 @@ class BlueprintTest(unittest.TestCase):
             "device_entities": lambda device: (device_members or {}).get(device, []),
             "integration_entities": lambda domain: list(entities) if havu_entities is None else havu_entities,
             "expand": lambda entity: [SimpleNamespace(entity_id=entity)] if entity in entities else [],
-            "has_service": lambda domain, service: available_services is None or f"{domain}.{service}" in available_services,
         }
 
         def render(value):
@@ -149,6 +150,21 @@ class BlueprintTest(unittest.TestCase):
                 field.pop("description", None)
             data["inputs"] = meta["input"]
         self.assertEqual(without_labels(de), without_labels(en))
+
+    def test_blueprint_update_metadata_and_import_links(self):
+        versions = []
+        for language, suffix in (("de", ""), ("en", ".en")):
+            meta = load(language)["blueprint"]
+            source = "https://github.com/topic2k/VU-BT-RC/blob/main/blueprints/automation/vuplus_hid_raw/short_press_buttons" + suffix + ".yaml"
+            self.assertEqual(meta["source_url"], source)
+            version = re.search(r"Blueprint(?:-Version| version): (\d+\.\d+\.\d+(?:-dev\.[1-9]\d*)?)\.", meta["description"])
+            self.assertIsNotNone(version)
+            versions.append(version.group(1))
+            readme = (ROOT / f"README{suffix}.md").read_text(encoding="utf-8")
+            links = re.findall(r"https://my\.home-assistant\.io/redirect/blueprint_import/\?[^)\s]+", readme)
+            self.assertEqual(len(links), 1)
+            self.assertEqual(parse_qs(urlparse(links[0]).query)["blueprint_url"], [source])
+        self.assertEqual(versions[0], versions[1])
 
     def test_alternative_target_selectors_cover_translated_keys_and_buttons(self):
         for language in ("de", "en"):
@@ -278,20 +294,19 @@ class BlueprintTest(unittest.TestCase):
                     alternative_button_targets=[{"command": command, "typed_target": target_choice(target), "action": action, "data": data}],
                     entities={target: "off"}), [(action, target, data)])
 
-    def test_mismatched_unavailable_missing_and_unsupported_actions_are_skipped(self):
-        for row, entities, services in (
-            ({"typed_target": target_choice("switch.amp"), "action": "button.press"}, {"switch.amp": "off"}, None),
-            ({"typed_target": target_choice("sensor.temp")}, {"sensor.temp": "20"}, None),
-            ({"typed_target": target_choice("switch.amp")}, {"switch.amp": "unavailable"}, None),
-            ({"typed_target": target_choice("switch.missing")}, {}, None),
-            ({"typed_target": target_choice("switch.amp")}, {"switch.amp": "off"}, []),
-            ({"typed_target": target_choice("switch.amp"), "data": ["invalid"]}, {"switch.amp": "off"}, None),
+    def test_mismatched_unavailable_missing_and_invalid_targets_are_skipped(self):
+        for row, entities in (
+            ({"typed_target": target_choice("switch.amp"), "action": "button.press"}, {"switch.amp": "off"}),
+            ({"typed_target": target_choice("sensor.temp")}, {"sensor.temp": "20"}),
+            ({"typed_target": target_choice("switch.amp")}, {"switch.amp": "unavailable"}),
+            ({"typed_target": target_choice("switch.missing")}, {}),
+            ({"typed_target": target_choice("switch.amp"), "data": ["invalid"]}, {"switch.amp": "off"}),
         ):
             with self.subTest(row=row):
                 self.assertEqual(self.run_blueprint(alternative_enabled=True,
                     default_prefix="button.receiver_",
                     alternative_button_targets=[{"command": "ok", **row}],
-                    entities={"button.receiver_ok": "unknown", **entities}, available_services=services), [])
+                    entities={"button.receiver_ok": "unknown", **entities}), [])
 
     def test_generic_targets_obey_conditions_and_disable(self):
         for conditions, disabled, expected in (

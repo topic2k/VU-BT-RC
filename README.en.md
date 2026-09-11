@@ -80,6 +80,11 @@ diagnostic indicators.
 
 ## Automations
 
+[Import English blueprint into Home Assistant](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Ftopic2k%2FVU-BT-RC%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fvuplus_hid_raw%2Fshort_press_buttons.en.yaml)
+
+For optional update notices, configure [Blueprints Updater](https://github.com/luuquangvu/blueprints-updater).
+See [blueprint updates](DOKUMENTATION.en.md#blueprint-updates). Updating the integration through HACS does not update imported blueprints.
+
 To forward presses to a satellite receiver's `button.*` entities, use the
 [blueprint for the entire remote](DOKUMENTATION.en.md#blueprint-short-presses-to-receiver-buttons).
 It maps short presses using a shared naming rule, supports exceptions, and can
