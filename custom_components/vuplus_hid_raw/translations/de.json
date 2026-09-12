@@ -3,9 +3,9 @@
     "step": {
       "device": {
         "title": "VU+ Bluetooth-Fernbedienung",
-        "description": "Wähle das verbundene Linux-Eingabegerät. Falls es fehlt, wecke die Fernbedienung auf und sende das Formular erneut ab, um die Liste zu aktualisieren. Nach dem Löschen des Integrationseintrags kannst du unter Reparaturen entscheiden, ob auch die Bluetooth-Kopplung gelöscht werden soll.",
+        "description": "Wähle das verbundene Linux-Eingabegerät anhand seiner Bluetooth-Adresse. Jede Fernbedienung erhält einen eigenen Eintrag. Wecke fehlende Fernbedienungen auf und lade die Liste erneut. Nach dem Löschen eines Eintrags kannst du unter Reparaturen über das zusätzliche Entkoppeln entscheiden.",
         "data": {
-          "device_name": "Linux-Gerätename",
+          "device_name": "Linux-Eingabegerät / Bluetooth-Adresse",
           "long_press_ms": "Langdruck-Schwelle (ms)"
         }
       },
@@ -19,29 +19,37 @@
       },
       "bluetooth": {
         "title": "Bluetooth-Fernbedienung koppeln",
-        "description": "Versetze die VU+-Fernbedienung gemäß ihrer Anleitung in den Kopplungsmodus und starte die Suche (etwa 10 Sekunden). Ein eingeschalteter lokaler Bluetooth-Adapter ist erforderlich; Bluetooth-Proxies werden nicht unterstützt. Nach der Auswahl wird die Fernbedienung gekoppelt, dauerhaft als vertrauenswürdig markiert und verbunden. Beim späteren Löschen des Integrationseintrags bleibt die Kopplung erhalten, bis du das zusätzliche Entkoppeln unter Reparaturen ausdrücklich bestätigst."
+        "description": "Bereits gekoppelte, verbundene oder in dieser Integration eingerichtete Fernbedienungen werden ausgeblendet. Versetze die VU+-Fernbedienung gemäß ihrer Anleitung in den Kopplungsmodus und starte die Suche (etwa 10 Sekunden). Ein eingeschalteter lokaler Bluetooth-Adapter ist erforderlich; Bluetooth-Proxies werden nicht unterstützt. Nach der Auswahl wird die Fernbedienung gekoppelt, dauerhaft als vertrauenswürdig markiert und verbunden. Beim späteren Löschen des Integrationseintrags bleibt die Kopplung erhalten, bis du das zusätzliche Entkoppeln unter Reparaturen ausdrücklich bestätigst."
       },
       "select_remote": {
         "title": "Fernbedienung auswählen",
-        "description": "Prüfe Bluetooth-Adresse und Adapter. Mit dem Absenden wird diese Fernbedienung gekoppelt, als vertrauenswürdig markiert und verbunden. Halte sie währenddessen wach. Bestehende Kopplungen werden wiederverwendet. Beim späteren Löschen des Integrationseintrags bleibt die Kopplung erhalten, bis du das zusätzliche Entkoppeln unter Reparaturen ausdrücklich bestätigst.",
+        "description": "Prüfe Bluetooth-Adresse und Adapter. Mit dem Absenden wird diese Fernbedienung gekoppelt, als vertrauenswürdig markiert und verbunden. Halte sie währenddessen wach. Bereits gekoppelte, verbundene oder in dieser Integration eingerichtete Fernbedienungen werden ausgeblendet. Beim späteren Löschen des Integrationseintrags bleibt die Kopplung erhalten, bis du das zusätzliche Entkoppeln unter Reparaturen ausdrücklich bestätigst.",
         "data": {
           "remote": "VU+-Fernbedienung"
         }
       },
       "device_missing": {
         "title": "Auf Eingabegerät warten",
-        "description": "Linux stellt noch kein lesbares Eingabegerät bereit. Wecke die verbundene Fernbedienung auf. Sende dieses Formular ab, um die Geräteliste erneut zu laden. Falls weiterhin kein Gerät erscheint, prüfe den Zugriff von Home Assistant auf /dev/input."
+        "description": "Es ist noch kein eindeutig auswählbares Eingabegerät verfügbar. Wecke die Fernbedienung auf und sende dieses Formular erneut ab. Prüfe bei Bedarf den Zugriff auf /dev/input und die Bluetooth-Adresse in evdev uniq. Nach dem Koppeln wird nur die ausgewählte Fernbedienung angeboten."
+      },
+      "reconfigure": {
+        "title": "Fernbedienung eindeutig zuordnen",
+        "description": "Ordne einen bisherigen Eintrag ohne feste Adresse der gewünschten Fernbedienung zu. Vorhandene Entitäten und Automationen bleiben erhalten. Eine bereits fest zugeordnete Fernbedienung kann hier nicht durch eine andere ersetzt werden.",
+        "data": {
+          "device_name": "Linux-Eingabegerät / Bluetooth-Adresse",
+          "long_press_ms": "Langdruck-Schwelle (ms)"
+        }
       }
     },
     "error": {
-      "device_not_found": "Das Eingabegerät wurde nicht gefunden.",
+      "device_not_found": "Das ausgewählte Eingabegerät wurde nicht eindeutig gefunden. Wecke die Fernbedienung auf und aktualisiere die Liste. Gleichnamige Geräte benötigen unterschiedliche Bluetooth-Adressen in evdev uniq.",
       "evdev_missing": "python-evdev ist nicht verfügbar.",
       "unknown": "Unbekannter Fehler.",
       "bluetooth_unavailable": "BlueZ oder der System-D-Bus ist nicht erreichbar. Prüfe Bluetooth und den D-Bus-Zugang des Home-Assistant-Hosts.",
       "bluetooth_permission": "Keine Berechtigung für den Bluetooth-Zugriff. Prüfe die D-Bus-Berechtigungen des Home-Assistant-Prozesses.",
       "bluetooth_no_adapter": "Kein lokaler Bluetooth-Adapter gefunden. Ein Bluetooth-Proxy reicht für evdev nicht aus.",
       "bluetooth_adapter_off": "Der lokale Bluetooth-Adapter ist ausgeschaltet oder nicht bereit. Aktiviere ihn und versuche es erneut.",
-      "bluetooth_no_devices": "Keine VUPLUS-BLE-RCU gefunden. Versetze die Fernbedienung in den Kopplungsmodus und starte erneut.",
+      "bluetooth_no_devices": "Keine neue VUPLUS-BLE-RCU gefunden. Bereits gekoppelte, verbundene oder eingerichtete Fernbedienungen werden ausgeblendet. Versetze die neue Fernbedienung in den Kopplungsmodus und starte erneut. Für eine bereits gekoppelte Fernbedienung nutze „Bereits verbundenes Eingabegerät auswählen“.",
       "bluetooth_device_gone": "Die ausgewählte Fernbedienung ist nicht mehr verfügbar. Starte die Suche erneut.",
       "bluetooth_timeout": "Zeitüberschreitung beim Bluetooth-Zugriff. Wecke die Fernbedienung auf oder aktiviere erneut den Kopplungsmodus und versuche es noch einmal.",
       "bluetooth_authentication": "Die Kopplung wurde abgelehnt oder ist fehlgeschlagen. Aktiviere den Kopplungsmodus und versuche es erneut.",
@@ -49,7 +57,9 @@
       "bluetooth_failed": "Bluetooth-Einrichtung fehlgeschlagen. Prüfe das Home-Assistant-Protokoll und versuche es erneut. Eine bereits erfolgte Kopplung bleibt erhalten."
     },
     "abort": {
-      "already_configured": "Diese Fernbedienung ist bereits eingerichtet."
+      "already_configured": "Diese Fernbedienung ist bereits eingerichtet.",
+      "legacy_entry_needs_address": "Es gibt bereits einen Eintrag mit diesem Gerätenamen ohne feste Adresse. Öffne bei diesem Eintrag zuerst Neu konfigurieren und wähle seine Fernbedienung aus. Füge danach die zweite Fernbedienung hinzu.",
+      "reconfigure_successful": "Die Fernbedienung wurde zugeordnet und die Integration neu geladen."
     },
     "progress": {
       "scan": "Lokale VU+-Fernbedienungen werden gesucht …",
@@ -98,6 +108,9 @@
   "device": {
     "remote": {
       "name": "VU+ Bluetooth-Fernbedienung"
+    },
+    "remote_with_address": {
+      "name": "VU+ Bluetooth-Fernbedienung ({address})"
     }
   },
   "selector": {

@@ -4,12 +4,35 @@
 
 ## Inhaltsverzeichnis
 
+- [1.2.0](#120)
 - [1.1.1](#111)
 - [1.1.0](#110)
 - [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.2.0
+
+- Die Bluetooth-Kopplungssuche blendet bereits gekoppelte, gebundene, verbundene
+  und in der Integration eingerichtete Fernbedienungen anhand ihrer Adresse aus,
+  auch über mehrere Adapter hinweg. Dialogtexte und Dokumentation angepasst;
+  Filterung und leere Ergebnislisten mit simulierten Geräten getestet.
+  Erfolgreiche Filterung vom Nutzer am 12.09.2026 im Praxistest bestätigt.
+
+- Mehrere gleichnamige VU+ Fernbedienungen über die Bluetooth-Adresse in evdev
+  `uniq` getrennt einrichten. Auswahl, Gerätenamen und Reconnect berücksichtigen
+  die feste Adresse; wechselnde Event-Pfade werden weiterhin nicht gespeichert.
+- Bestehende Einträge können über **Neu konfigurieren** eindeutig zugeordnet
+  werden, ohne Geräte-, Entitäts- oder Automationszuordnungen zu ersetzen.
+  Vorhandene Bluetooth-Zuordnungen werden übernommen. Ohne eindeutige Auswahl
+  wird kein beliebiges Gerät gelesen.
+- Koppelassistent, Diagnose und bestätigtes Entkoppeln berücksichtigen die
+  ausgewählte Fernbedienung. Tests für zwei gleichnamige Geräte, getrennte
+  Tastenereignisse, Pfadwechsel, fehlende Geräte und Bestandszuordnung ergänzt.
+  Lokal mit simulierten Geräten geprüft. Host-Ausgabe vom 12.09.2026 bestätigt
+  unterschiedliche `uniq`-Adressen bei zwei Geräten; deren tatsächlicher
+  Parallelbetrieb und Reconnects sind noch nicht getestet.
 
 ## 1.1.1
 

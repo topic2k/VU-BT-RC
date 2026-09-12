@@ -105,7 +105,7 @@ class EventEntitySourceTest(unittest.TestCase):
             "/dev/input/event7",
             integration._find_device(
                 "VUPLUS-BLE-RCU Keyboard",
-                lambda: ["/dev/input/event7", "/dev/input/event9"],
+                lambda: ["/dev/input/event7"],
                 InputDevice,
             ),
         )
@@ -259,6 +259,8 @@ class ReaderTest(unittest.IsolatedAsyncioTestCase):
         }
 
         class Device:
+            path = "/dev/input/event7"
+
             def close(self):
                 pass
 
@@ -278,7 +280,7 @@ class ReaderTest(unittest.IsolatedAsyncioTestCase):
                 return asyncio.create_task(coroutine, name=name)
 
         state["InputDevice"] = lambda path: Device()
-        with patch.object(integration, "_find_device", return_value="/dev/input/event7"):
+        with patch.object(integration, "open_input_device", return_value=Device()):
             await integration._reader_supervisor(Hass(), state)
 
         self.assertEqual(

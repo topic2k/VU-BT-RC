@@ -11,7 +11,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity import DeviceInfo
 
-from . import COMMAND_LABELS, DOMAIN, INTEGRATION_VERSION, _register_callback
+from . import COMMAND_LABELS, DOMAIN, INTEGRATION_VERSION, _device_translation, _register_callback
 
 EVENT_TYPE_BY_ACTION = {
     "press": ButtonEventType.PRESS_START,
@@ -46,7 +46,7 @@ class VuplusRemoteButtonEvent(EventEntity):
             identifiers={
                 (DOMAIN, state["entry"].unique_id or state["entry"].entry_id)
             },
-            translation_key="remote",
+            **_device_translation(state),
             manufacturer="VU+",
             model="VUPLUS-BLE-RCU",
             model_id="VUPLUS-BLE-RCU",

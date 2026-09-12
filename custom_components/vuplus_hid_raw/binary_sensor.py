@@ -7,7 +7,7 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 
-from . import DOMAIN, INTEGRATION_VERSION, _register_diagnostic_callback
+from . import DOMAIN, INTEGRATION_VERSION, _device_translation, _register_diagnostic_callback
 
 DIAGNOSTICS = ("paired", "connected", "trusted", "input_device", "reader_active")
 
@@ -27,7 +27,7 @@ class VuplusRemoteDiagnostic(BinarySensorEntity):
         self._attr_translation_key = key
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, state["entry"].unique_id or state["entry"].entry_id)},
-            translation_key="remote",
+            **_device_translation(state),
             manufacturer="VU+",
             model="VUPLUS-BLE-RCU",
             model_id="VUPLUS-BLE-RCU",

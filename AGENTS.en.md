@@ -24,7 +24,10 @@ Event entities are the only automation interface. There is no
 
 The relevant evdev device is normally named `VUPLUS-BLE-RCU Keyboard`.
 Never assume a fixed `/dev/input/eventX`: its number can change after Bluetooth
-reconnections. Find the device by name and never persist its event number.
+reconnections. Find the device by name and, when available, its Bluetooth address
+from evdev `uniq`. Remotes with identical names must be distinguished by this
+address; ambiguous matches must never select an arbitrary device. Never persist
+the event number.
 
 ## Async rules
 

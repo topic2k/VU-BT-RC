@@ -23,8 +23,10 @@ Bus-Event `vuplus_remote_command` noch integrationsspezifische Device Triggers.
 
 Das relevante evdev-Gerät heißt normalerweise `VUPLUS-BLE-RCU Keyboard`.
 Nicht dauerhaft von einem festen `/dev/input/eventX` ausgehen. Die Event-Nummer kann sich nach Bluetooth-Reconnects ändern.
-Das Gerät wird anhand seines Namens gesucht. Die Event-Nummer darf nicht gespeichert
-werden.
+Das Gerät wird anhand seines Namens und, sofern vorhanden, der Bluetooth-Adresse
+aus evdev `uniq` gesucht. Gleichnamige Fernbedienungen müssen über diese Adresse
+unterschieden werden; bei Mehrdeutigkeit darf kein beliebiges Gerät gewählt werden.
+Die Event-Nummer darf nicht gespeichert werden.
 
 ## Async-Regeln
 

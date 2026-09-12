@@ -12,6 +12,7 @@
 - [Geräteinformationen](#geräteinformationen)
 - [Diagnose-Entitäten](#diagnose-entitäten)
 - [Einrichtung](#einrichtung)
+- [Mehrere Fernbedienungen](#mehrere-fernbedienungen)
 - [Bluetooth-Kopplung](#bluetooth-kopplung)
 - [Entkoppeln beim Löschen](#entkoppeln-beim-löschen)
 - [Events](#events)
@@ -105,7 +106,7 @@ Ein Eintrag in `configuration.yaml` ist nicht erforderlich.
 - Konfiguration über **Einstellungen → Geräte & Dienste**.
 - Optionales Suchen, Koppeln, Vertrauen und Verbinden der Fernbedienung im Config Flow.
 - Zusätzliche Benutzerbestätigung zum Entkoppeln nach dem Löschen des Integrationseintrags.
-- Auswahl der Fernbedienung über ihren Linux-Gerätenamen; das Dropdown zeigt zusätzlich den aktuellen Pfad.
+- Auswahl über Linux-Gerätename und Bluetooth-Adresse; das Dropdown zeigt zusätzlich den aktuellen Pfad.
 - Device Registry für die Fernbedienung.
 - Diagnose-Entitäten für Bluetooth-Kopplung, Verbindung und Reader-Zustand.
 - Eigene Event-Entität für jede unterstützte Taste.
@@ -130,8 +131,8 @@ In der Geräteansicht stehen fünf aktivierte Diagnose-Binärsensoren bereit:
 
 - **Gekoppelt**, **Bluetooth verbunden** und **Vertrauenswürdig** lesen die
   entsprechenden Zustände der zugeordneten BlueZ-Fernbedienung aus.
-- **Eingabegerät verfügbar** zeigt, ob der konfigurierte Linux-Gerätename aktuell
-  als evdev-Gerät vorhanden ist.
+- **Eingabegerät verfügbar** zeigt, ob das konfigurierte Gerät anhand von Name und
+  gespeicherter Adresse eindeutig als evdev-Gerät vorhanden ist.
 - **Eingabe wird gelesen** zeigt, ob der evdev-Reader das Gerät geöffnet hat.
 
 Die Bluetooth-Zustände werden beim Laden und anschließend alle 30 Sekunden
@@ -143,16 +144,55 @@ statt einen falschen Aus-Zustand zu zeigen.
 
 Die Integration wird über die UI hinzugefügt. Zu Beginn stehen **Bereits verbundenes
 Eingabegerät auswählen** und **Bluetooth-Fernbedienung koppeln** zur Auswahl.
-Für die Tastenerkennung gespeichert wird der Linux-Gerätename,
-standardmäßig `VUPLUS-BLE-RCU Keyboard`; `/dev/input/eventX` wird nie gespeichert.
-Zusätzlich werden, sofern eindeutig zugeordnet, die Bluetooth-Adressen der
-Fernbedienung und des lokalen Adapters für das spätere Entkoppeln hinterlegt.
+Für die Tastenerkennung werden der Linux-Gerätename, standardmäßig
+`VUPLUS-BLE-RCU Keyboard`, und die Bluetooth-Adresse aus evdev `uniq` gespeichert.
+`/dev/input/eventX` wird nie gespeichert. Sofern eindeutig zugeordnet, wird auch
+die Adresse des lokalen Adapters für Diagnose und späteres Entkoppeln hinterlegt.
 Die Fernbedienung muss zum Einrichten aufgeweckt und verbunden sein, damit Linux ihr
 evdev-Gerät bereitstellt und sie im Dropdown erscheint.
 
 Die Langdruck-Schwelle beträgt standardmäßig **500 ms**. Sie lässt sich beim
 Einrichten und anschließend unter den Integrationsoptionen zwischen **100 und
 5000 ms** in Schritten von **50 ms** einstellen.
+
+## Mehrere Fernbedienungen
+
+Jede Fernbedienung erhält einen eigenen Integrationseintrag mit eigenen
+Tasten-Event-Entitäten und Diagnoseanzeigen. Im Dropdown erscheinen gleichnamige
+Geräte getrennt mit ihrer Bluetooth-Adresse. Wähle jeweils die passende Adresse
+und `VUPLUS-BLE-RCU Keyboard`. Die übersetzten Gerätenamen enthalten die Adresse;
+du kannst ihnen anschließend eigene Namen geben. Im Blueprint wählst du für jede
+Automation das zugehörige Fernbedienungsgerät aus.
+
+**Bestehenden Eintrag übernehmen:** Eine bereits gespeicherte Bluetooth-Zuordnung
+wird als feste Leseradresse übernommen. Fehlt sie, wird ein eindeutig gefundenes
+Einzelgerät bei Verfügbarkeit an seine Adresse gebunden. Sind mehrere gleichnamige
+Geräte vorhanden, bleibt der Leser ohne feste Zuordnung inaktiv. Öffne dann beim
+vorhandenen Eintrag unter **Einstellungen → Geräte & Dienste → VU+ HID Raw Remote**
+das Menü **Neu konfigurieren** und wähle seine Fernbedienung anhand der Adresse.
+Geräte- und Entitätskennungen sowie bestehende Automationen bleiben erhalten.
+Danach über **Eintrag hinzufügen** die zweite Fernbedienung einrichten. Solange
+ein unzugeordneter gleichnamiger Eintrag existiert, verhindert die Einrichtung
+eines weiteren Eintrags eine doppelte Nutzung derselben Fernbedienung.
+Eine bereits fest zugeordnete Fernbedienung kann über **Neu konfigurieren** nicht
+durch eine andere ersetzt werden.
+
+Die feste Adresse stammt aus dem evdev-Feld `uniq`, unabhängig vom BlueZ-Zugang.
+Das Feld `phys` dient nur zur zusätzlichen Zuordnung des lokalen Bluetooth-Adapters.
+Prüfung auf dem Linux-Host, während beide Fernbedienungen verbunden sind:
+
+```sh
+grep -A 7 -B 1 'Name="VUPLUS-BLE-RCU Keyboard"' /proc/bus/input/devices
+```
+
+Die Zeilen `U: Uniq=` sollten die unterschiedlichen Bluetooth-Adressen enthalten.
+Bei fehlendem `uniq` bleibt ein einzelnes eindeutig benanntes Eingabegerät nutzbar;
+mehrere gleichnamige Geräte ohne unterscheidbare Adresse werden nicht angeboten.
+Am 12.09.2026 bestätigte eine vom Nutzer bereitgestellte Host-Ausgabe zwei
+gleichnamige Keyboard-Geräte mit unterschiedlichen Bluetooth-Adressen in `uniq`
+und identischem Adapter in `phys`. Diese Metadaten werden auch im Test nachgebildet.
+Die Funktion ist lokal mit simulierten evdev-Geräten geprüft; der tatsächliche
+Parallelbetrieb und Reconnects mit zwei Fernbedienungen auf HA OS stehen noch aus.
 
 ## Bluetooth-Kopplung
 
@@ -165,6 +205,10 @@ eigenen optionalen Ablauf:
 2. Die Suche starten. Sie dauert etwa zehn Sekunden und verwendet eingeschaltete
    lokale Bluetooth-Adapter. Angeboten werden Geräte mit dem Bluetooth-Namen
    `VUPLUS-BLE-RCU` (gegebenenfalls mit einem durch Leerzeichen getrennten Zusatz).
+   Bereits gekoppelte, dauerhaft gebundene oder verbundene Geräte werden über
+   alle lokalen Adapter hinweg anhand ihrer Bluetooth-Adresse ausgeblendet,
+   ebenso bereits in der Integration eingerichtete Adressen. Schlafende
+   gekoppelte Fernbedienungen werden dadurch nicht erneut angeboten.
 3. Die Fernbedienung anhand ihrer Bluetooth-Adresse und des Adapters auswählen.
    Mit dem Absenden wird sie gekoppelt (`Pair`), als vertrauenswürdig markiert
    (`Trusted = true`) und verbunden (`Connect`).
@@ -187,7 +231,15 @@ Unterstützt wird Kopplung ohne PIN-Eingabe (Just Works). Falls die Fernbedienun
 eine PIN oder einen Zahlenvergleich verlangt, meldet der Dialog dies; diese
 Kopplung muss weiterhin mit `bluetoothctl` erfolgen.
 
-Bestehende Kopplungen werden wiederverwendet. Kopplung und Vertrauen bleiben
+Für bereits gekoppelte Fernbedienungen den Weg **Bereits verbundenes Eingabegerät
+auswählen** verwenden und die Fernbedienung aufwecken. Die Suche führt keine
+Historie gelöschter Kopplungen: Nach dem Entfernen der Kopplung und des
+Integrationseintrags kann eine Fernbedienung wieder angeboten werden.
+Der Filter wurde lokal mit simulierten BlueZ-Geräten und Konfigurationseinträgen
+geprüft. Der Nutzer hat die erfolgreiche Filterung am 12.09.2026 im Praxistest
+bestätigt; daraus folgt keine Bestätigung der übrigen noch offenen Hardwaretests.
+
+Kopplung und Vertrauen bleiben
 bei einem späteren Fehler oder beim Abbrechen der Einrichtung in BlueZ erhalten.
 Beim Löschen eines fertigen Integrationseintrags bleibt die Kopplung zunächst
 erhalten; das zusätzliche Entkoppeln muss ausdrücklich bestätigt werden (siehe unten). Ein laufender Koppelversuch wird beim Abbruch
@@ -195,7 +247,8 @@ beendet; der temporäre Pairing-Agent und eigene Suchsitzungen werden freigegebe
 Die Integration ersetzt keinen globalen Bluetooth-Agenten und ändert keine
 Adaptereinstellungen. Bluetooth-Adressen dienen zusätzlich zum Entkoppeln;
 BlueZ-Gerätepfade, `hciX`-Nummern und evdev-Pfade werden nicht gespeichert.
-Der Reader sucht weiterhin ausschließlich nach dem Linux-Gerätenamen.
+Der Reader prüft Linux-Gerätename und die gespeicherte Bluetooth-Adresse.
+Nach dem Koppeln bietet die Eingabegeräteauswahl nur die gewählte Fernbedienung an.
 
 ## Entkoppeln beim Löschen
 
@@ -232,8 +285,11 @@ versucht die Integration, die Zuordnung aus den optionalen evdev-Metadaten
 `uniq` und `phys` sowie den BlueZ-Geräten eindeutig zu ermitteln. Dies geschieht
 beim Einrichten, beim Laden eines Eintrags ohne Zuordnung und nötigenfalls beim
 Löschen. Falls die Zuordnung fehlt, die Fernbedienung aufwecken und die Integration
-neu laden, damit die Zuordnung gespeichert werden kann. Der Reader verwendet
-für die Gerätesuche und den Reconnect ausschließlich den Linux-Gerätenamen.
+neu laden, damit die Zuordnung gespeichert werden kann. Für gespeicherte
+Fernbedienungsadressen wird ausschließlich die passende evdev-Schnittstelle
+berücksichtigt. Ein anderer Eintrag mit abweichender fester Adresse verhindert
+das bestätigte Entkoppeln nicht; ein unzugeordneter gleichnamiger Eintrag schützt
+die Kopplung weiterhin vor einer unsicheren Entfernung.
 
 Bei fehlender Zuordnung, fehlendem Adapter oder einem Fehler beim bestätigten
 Entkoppeln bleibt die Rückfrage offen und zeigt den Grund. Die Auswahl wird wieder
@@ -598,7 +654,9 @@ ausschließlich Wiederholungen. Long Press wird aus der tatsächlichen Dauer bes
 
 ## Reconnect
 
-Der Reader sucht das Gerät anhand des Linux-Gerätenamens. Bei einer Trennung wird
+Der Reader sucht das Gerät anhand des Linux-Gerätenamens und der gespeicherten
+Bluetooth-Adresse aus `uniq`. Fehlt diese Fernbedienung, wird kein anderes
+gleichnamiges Gerät gelesen. Bei einer Trennung wird
 alle zwei Sekunden erneut gesucht. Dadurch sind wechselnde `/dev/input/eventX`-Pfade
 unproblematisch. `MSC_SCAN` wird jeweils nur dem unmittelbar folgenden Key-Event
 zugeordnet und bei einer Wiederverbindung verworfen.
@@ -640,9 +698,10 @@ Lautstärke-Programmierung steht in
 - `TV Power` und `AV` erzeugen auf der verwendeten Linux-HID/evdev-Schicht kein
   Ereignis und stehen nicht als Trigger zur Verfügung.
 - Bluetooth-Proxies ersetzen kein lokales evdev-Gerät.
-- Mehrere Fernbedienungen mit identischem Linux-Gerätenamen lassen sich nicht
-  getrennt konfigurieren; die Geräteauswahl und der Reader unterscheiden sie
-  ausschließlich anhand ihres Namens.
+- Mehrere gleichnamige Fernbedienungen benötigen unterschiedliche Bluetooth-Adressen
+  in evdev `uniq`. Fehlende oder doppelte Identitäten lassen sich nicht zuverlässig
+  unterscheiden. Der Betrieb mit zwei echten Fernbedienungen ist noch nicht bestätigt;
+  die Zuordnung und Ereignistrennung sind mit simulierten evdev-Geräten geprüft.
 - Installation über HACS sowie Hinzufügen, Bluetooth-Kopplung und bestätigtes
   Entkoppeln sind mit der Fernbedienung getestet. Die automatisierten Tests
   simulieren weiterhin Home Assistant und den BlueZ-Transport; Tasten, Langdruck

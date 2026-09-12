@@ -4,12 +4,33 @@
 
 ## Contents
 
+- [1.2.0](#120)
 - [1.1.1](#111)
 - [1.1.0](#110)
 - [1.0.3](#103)
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.2.0
+
+- Bluetooth pairing discovery hides remotes already paired, bonded, connected
+  or configured in the integration by address, including across adapters.
+  Updated dialogs and documentation; tested filtering and empty results with
+  simulated devices. Successful filtering confirmed by the user in a hardware
+  test on 2026-09-12.
+
+- Set up multiple VU+ remotes with identical names separately using the Bluetooth
+  address in evdev `uniq`. Selection, device names and reconnection use the fixed
+  address; changing event paths are still never stored.
+- Legacy entries can be assigned through **Reconfigure** while retaining device,
+  entity and automation associations. Existing Bluetooth identities are reused.
+  Ambiguous selection never reads an arbitrary device.
+- Pairing, diagnostics and confirmed unpairing respect the selected remote.
+  Added tests for two identical devices, separate button events, path changes,
+  missing devices and legacy assignment. Verified locally with simulated devices;
+  a host listing from 2026-09-12 confirms distinct `uniq` addresses for two devices.
+  Actual parallel operation and reconnects remain untested.
 
 ## 1.1.1
 
