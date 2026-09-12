@@ -10,7 +10,8 @@ import voluptuous as vol
 from homeassistant.components.repairs import RepairsFlow
 from homeassistant.helpers import selector
 
-from . import CONF_BLUETOOTH_DEVICE, DOMAIN
+from . import DOMAIN
+from .input_device import entry_address
 from .bluetooth_pairing import PairingError, async_unpair_remote, normalize_address
 
 _LOGGER = logging.getLogger(__name__)
@@ -68,8 +69,8 @@ class UnpairRepairFlow(RepairsFlow):
         if not all(identity.values()):
             raise PairingError("bluetooth_identity_missing")
         # Recheck at confirmation time: the remote may have been added again.
-        if any(entry.data.get(CONF_BLUETOOTH_DEVICE) == identity
-               or (data.get("device_name")
+        if any(entry_address(entry) == identity["address"]
+               or (not entry_address(entry) and data.get("device_name")
                    and entry.data.get("device_name") == data["device_name"])
                for entry in self.hass.config_entries.async_entries(DOMAIN)):
             raise PairingError("bluetooth_still_in_use")

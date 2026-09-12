@@ -11,9 +11,13 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
+from .input_device import (
+    CONF_DEVICE_ADDRESS, device_address, entry_address, open_input_device,
+)
+
 _LOGGER = logging.getLogger(__name__)
 DOMAIN = "vuplus_hid_raw"
-INTEGRATION_VERSION = "1.1.1"
+INTEGRATION_VERSION = "1.2.0"
 PLATFORMS = [Platform.EVENT, Platform.BINARY_SENSOR]
 DEFAULT_DEVICE_NAME = "VUPLUS-BLE-RCU Keyboard"
 DEFAULT_LONG_PRESS_MS = 500
@@ -75,6 +79,17 @@ COMMAND_LABELS = {
     "left_0": "Left of 0",
     "right_0": "Right of 0"
 }
+def _device_translation(state):
+    """Show the stable address in translated device names and device information."""
+    if address := state.get(CONF_DEVICE_ADDRESS):
+        return {
+            "translation_key": "remote_with_address",
+            "translation_placeholders": {"address": address},
+            "serial_number": address,
+        }
+    return {"translation_key": "remote"}
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up a configured VU+ remote."""
     hass.data.setdefault(DOMAIN, {})
@@ -85,12 +100,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return False
 
     device_name = entry.data.get("device_name", DEFAULT_DEVICE_NAME)
-    if CONF_BLUETOOTH_DEVICE not in entry.data:
-        identity = await _async_get_bluetooth_device(hass, device_name)
+    address = entry_address(entry)
+    identity = entry.data.get(CONF_BLUETOOTH_DEVICE)
+    if not identity:
+        identity = await _async_get_bluetooth_device(hass, device_name, address)
+    if not address and identity:
+        address = identity["address"]
+    if identity or address:
+        data = dict(entry.data)
         if identity:
-            hass.config_entries.async_update_entry(
-                entry, data={**entry.data, CONF_BLUETOOTH_DEVICE: identity}
-            )
+            data[CONF_BLUETOOTH_DEVICE] = identity
+        if address:
+            data[CONF_DEVICE_ADDRESS] = address
+        if data != entry.data:
+            hass.config_entries.async_update_entry(entry, data=data)
     long_press_ms = int(entry.options.get("long_press_ms", entry.data.get("long_press_ms", DEFAULT_LONG_PRESS_MS)))
 
     state = {
@@ -101,7 +124,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "paired": None, "connected": None, "trusted": None,
             "input_device": False, "reader_active": False,
         },
-        "bluetooth_identity": entry.data.get(CONF_BLUETOOTH_DEVICE),
+        "bluetooth_identity": identity, CONF_DEVICE_ADDRESS: address,
         "InputDevice": InputDevice, "list_devices": list_devices,
     }
     hass.data[DOMAIN][entry.entry_id] = state
@@ -135,8 +158,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
-def _read_bluetooth_addresses(device_name, list_devices, InputDevice):
-    """Read optional cleanup metadata; never use it for reader discovery."""
+def _read_bluetooth_addresses(device_name, list_devices, InputDevice, address=None):
+    """Resolve metadata for the selected remote, without guessing by name."""
     from .bluetooth_pairing import normalize_address
 
     candidates = set()
@@ -146,14 +169,16 @@ def _read_bluetooth_addresses(device_name, list_devices, InputDevice):
             try:
                 if device.name != device_name:
                     continue
-                address = normalize_address(device.uniq)
-                if not address:
+                remote_address = device_address(device)
+                if address and remote_address != address:
+                    continue
+                if not remote_address:
                     return None
                 try:
                     adapter = normalize_address((device.phys or "").split("/")[0])
                 except (OSError, AttributeError):
                     adapter = None
-                candidates.add((address, adapter))
+                candidates.add((remote_address, adapter))
             finally:
                 device.close()
         except (OSError, AttributeError):
@@ -162,14 +187,14 @@ def _read_bluetooth_addresses(device_name, list_devices, InputDevice):
     return next(iter(candidates)) if len(candidates) == 1 else None
 
 
-async def _async_get_bluetooth_device(hass, device_name):
+async def _async_get_bluetooth_device(hass, device_name, address=None):
     """Best-effort mapping for configuration entries without a Bluetooth identity."""
     from .bluetooth_pairing import async_resolve_pairing
 
     try:
         from evdev import InputDevice, list_devices
         addresses = await hass.async_add_executor_job(
-            _read_bluetooth_addresses, device_name, list_devices, InputDevice
+            _read_bluetooth_addresses, device_name, list_devices, InputDevice, address
         )
         if addresses:
             return await async_resolve_pairing(*addresses)
@@ -186,7 +211,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     identity = entry.data.get(CONF_BLUETOOTH_DEVICE)
     if not identity:
         identity = await _async_get_bluetooth_device(
-            hass, entry.data.get("device_name", DEFAULT_DEVICE_NAME)
+            hass, entry.data.get("device_name", DEFAULT_DEVICE_NAME), entry_address(entry)
         )
     identity = identity if isinstance(identity, dict) else {}
     ir.async_create_issue(
@@ -203,18 +228,15 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     )
 
 
-def _find_device(device_name: str, list_devices, InputDevice):
-    for path in list_devices():
-        try:
-            device = InputDevice(path)
-            try:
-                if device.name == device_name:
-                    return path
-            finally:
-                device.close()
-        except OSError:
-            continue
-    return None
+def _find_device(device_name: str, list_devices, InputDevice, address=None):
+    """Validate selection; paths are transient and never persisted."""
+    device = open_input_device(device_name, list_devices, InputDevice, address)
+    if device is None:
+        return None
+    try:
+        return device.path
+    finally:
+        device.close()
 
 
 def _set_diagnostics(state: dict[str, Any], **changes: bool | None) -> None:
@@ -340,14 +362,23 @@ async def _reader_supervisor(hass: HomeAssistant, state: dict[str, Any]) -> None
         device = None
         pending_scan = None
         try:
-            path = await hass.async_add_executor_job(_find_device, state["device_name"], state["list_devices"], state["InputDevice"])
-            _set_diagnostics(state, input_device=bool(path))
-            if not path:
+            device = await hass.async_add_executor_job(
+                open_input_device, state["device_name"], state["list_devices"],
+                state["InputDevice"], state.get(CONF_DEVICE_ADDRESS),
+            )
+            _set_diagnostics(state, input_device=device is not None)
+            if device is None:
                 await asyncio.sleep(RECONNECT_DELAY)
                 continue
-            device = await hass.async_add_executor_job(state["InputDevice"], path)
+            # Pin a legacy name-only entry as soon as a unique device is available.
+            if not state.get(CONF_DEVICE_ADDRESS) and (address := device_address(device)):
+                state[CONF_DEVICE_ADDRESS] = address
+                hass.config_entries.async_update_entry(
+                    state["entry"],
+                    data={**state["entry"].data, CONF_DEVICE_ADDRESS: address},
+                )
             _set_diagnostics(state, reader_active=True)
-            _LOGGER.info("VU+ raw HID connected to %s", path)
+            _LOGGER.info("VU+ raw HID connected to %s (%s)", device.path, state.get(CONF_DEVICE_ADDRESS))
             async for event in device.async_read_loop():
                 if state["stop"].is_set(): break
                 if event.type == 4 and event.code == 4:  # EV_MSC / MSC_SCAN

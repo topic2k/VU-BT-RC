@@ -1,7 +1,6 @@
 """Local BlueZ pairing for the VU+ remote (no GATT/proxy connection)."""
 
 import asyncio
-import re
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass
 
@@ -9,6 +8,8 @@ from dbus_fast import BusType, Message, MessageType, Variant
 from dbus_fast.aio import MessageBus
 from dbus_fast.errors import DBusError
 from dbus_fast.service import ServiceInterface, method
+
+from .input_device import normalize_address
 
 BLUEZ = "org.bluez"
 ADAPTER = "org.bluez.Adapter1"
@@ -24,13 +25,6 @@ HID_UUIDS = {
     "00001812-0000-1000-8000-00805f9b34fb",
     "00001124-0000-1000-8000-00805f9b34fb",
 }
-
-
-def normalize_address(value) -> str | None:
-    """Accept only a complete Bluetooth address, never a name or event path."""
-    if isinstance(value, str) and re.fullmatch(r"[0-9a-fA-F]{2}(?::[0-9a-fA-F]{2}){5}", value):
-        return value.upper()
-    return None
 
 
 def _pairing_identity(objects, properties) -> dict[str, str] | None:
@@ -201,7 +195,7 @@ async def _connection():
 
 
 async def async_discover_remotes() -> list[Remote]:
-    """Scan powered local adapters, releasing only our discovery sessions."""
+    """Find unpaired, disconnected remotes across powered local adapters."""
     async with _connection() as bus:
         objects = await _objects(bus)
         adapters = [path for path, interfaces in objects.items() if ADAPTER in interfaces]
@@ -217,12 +211,22 @@ async def async_discover_remotes() -> list[Remote]:
                 started.append(path)
             await asyncio.sleep(SCAN_SECONDS)
             objects = await _objects(bus)
+            # A known remote may also appear as unpaired on another adapter.
+            known_addresses = {
+                normalize_address(_value(props, "Address"))
+                for interfaces in objects.values()
+                if (props := interfaces.get(DEVICE)) is not None
+                and any(_value(props, key, False)
+                        for key in ("Paired", "Bonded", "Connected"))
+            }
             return sorted(
                 [Remote(path, _value(props, "Address", ""),
                         _value(props, "Alias", REMOTE_NAME))
                  for path, interfaces in objects.items()
                  if (props := interfaces.get(DEVICE)) is not None
                  and _is_remote(props)
+                 and (address := normalize_address(_value(props, "Address")))
+                 and address not in known_addresses
                  and _value(props, "Adapter") in powered],
                 key=lambda remote: (remote.address, remote.path),
             )

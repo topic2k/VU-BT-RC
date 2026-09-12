@@ -191,6 +191,38 @@ class BluetoothTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.bus.members[-1], "StopDiscovery")
         self.assertTrue(self.bus.disconnected)
 
+    async def test_scan_excludes_paired_bonded_and_connected_remotes(self):
+        for state in ("Paired", "Bonded", "Connected"):
+            with self.subTest(state=state):
+                self.bus.objects[PATH][pairing.DEVICE] = properties(
+                    **{state: ("b", True)})
+                with patch.object(pairing, "SCAN_SECONDS", 0):
+                    self.assertEqual(await pairing.async_discover_remotes(), [])
+        self.assertNotIn("RemoveDevice", self.bus.members)
+        self.assertNotIn("Disconnect", self.bus.members)
+
+    async def test_scan_excludes_known_address_on_other_adapter(self):
+        # The bond remains relevant even if its adapter is powered off.
+        self.bus.objects["/org/bluez/hci1"] = {
+            pairing.ADAPTER: {"Powered": Variant("b", False)}}
+        self.bus.objects[PATH.replace("hci0", "hci1")] = {
+            pairing.DEVICE: properties(
+                Adapter=("o", "/org/bluez/hci1"),
+                Address=("s", REMOTE.address.lower()), Paired=("b", True))}
+        new_path = "/org/bluez/hci0/dev_00_11_22_33_44_55"
+        self.bus.objects[new_path] = {
+            pairing.DEVICE: properties(Address=("s", "00:11:22:33:44:55"))}
+        with patch.object(pairing, "SCAN_SECONDS", 0):
+            self.assertEqual(await pairing.async_discover_remotes(), [
+                pairing.Remote(new_path, "00:11:22:33:44:55", "VUPLUS-BLE-RCU")])
+
+    async def test_scan_uses_state_after_discovery(self):
+        async def paired_during_scan(_seconds):
+            self.bus.objects[PATH][pairing.DEVICE]["Paired"] = Variant("b", True)
+
+        with patch.object(pairing.asyncio, "sleep", side_effect=paired_during_scan):
+            self.assertEqual(await pairing.async_discover_remotes(), [])
+
     async def test_no_local_adapter_and_powered_off(self):
         for objects, expected in [({}, "bluetooth_no_adapter"),
             ({"/org/bluez/hci0": {pairing.ADAPTER: {"Powered": Variant("b", False)}}},
@@ -261,6 +293,21 @@ class FlowBase:
         if getattr(self, "duplicate", False):
             raise RuntimeError("already_configured")
 
+    def _async_current_entries(self):
+        return getattr(self, "current_entries", [])
+
+    def async_abort(self, **kwargs):
+        return {"type": "abort", **kwargs}
+
+    def async_update_and_abort(self, entry, *, data_updates, options):
+        # HA 2026.9 accepts a complete options mapping, not options_updates.
+        entry.data = {**entry.data, **data_updates}
+        entry.options = options
+        return self.async_abort(reason="reconfigure_successful")
+
+    def async_update_reload_and_abort(self, entry, *, data_updates, options):
+        return self.async_update_and_abort(entry, data_updates=data_updates, options=options)
+
     def async_create_entry(self, **kwargs):
         return {"type": "create_entry", **kwargs}
 
@@ -289,7 +336,7 @@ class FlowTest(unittest.IsolatedAsyncioTestCase):
             async_add_executor_job=AsyncMock(side_effect=lambda func, *args: func(*args)),
         )
         evdev = types.ModuleType("evdev")
-        evdev.InputDevice = lambda path: types.SimpleNamespace(name="VUPLUS-BLE-RCU Keyboard", close=lambda: None)
+        evdev.InputDevice = lambda path: types.SimpleNamespace(name="VUPLUS-BLE-RCU Keyboard", path=path, close=lambda: None)
         evdev.list_devices = lambda: ["/dev/input/event7"]
         patcher = patch.dict(sys.modules, {"evdev": evdev})
         patcher.start()
@@ -313,7 +360,8 @@ class FlowTest(unittest.IsolatedAsyncioTestCase):
             await result["progress_task"]
             result = await self.flow.async_step_scan()
         self.assertEqual(result["next_step_id"], "select_remote")
-        with patch.object(self.module, "async_pair_remote", AsyncMock()) as pair:
+        with patch.object(self.module, "async_pair_remote", AsyncMock(return_value=IDENTITY)) as pair, \
+             patch.object(self.module, "_find_device", return_value="/dev/input/event7"):
             result = await self.flow.async_step_select_remote({"remote": PATH})
             await result["progress_task"]
             result = await self.flow.async_step_pair()
@@ -339,6 +387,36 @@ class FlowTest(unittest.IsolatedAsyncioTestCase):
         self.flow.duplicate = True
         with self.assertRaisesRegex(RuntimeError, "already_configured"):
             await self.flow.async_step_device({"device_name": "VUPLUS-BLE-RCU Keyboard", "long_press_ms": 500})
+
+    async def test_scan_filters_configured_addresses_including_legacy_metadata(self):
+        new_remote = pairing.Remote(
+            "/org/bluez/hci0/dev_00_11_22_33_44_55", "00:11:22:33:44:55",
+            "VUPLUS-BLE-RCU")
+        for data in (
+            {"device_address": REMOTE.address.lower()},
+            {"bluetooth_device": {"address": REMOTE.address.lower()}},
+        ):
+            with self.subTest(data=data):
+                self.flow.current_entries = [types.SimpleNamespace(data=data)]
+                with patch.object(self.module, "async_discover_remotes",
+                                  AsyncMock(return_value=[REMOTE, new_remote])):
+                    result = await self.flow.async_step_bluetooth({})
+                    await result["progress_task"]
+                    result = await self.flow.async_step_scan()
+                self.assertEqual(result["next_step_id"], "select_remote")
+                self.assertEqual(self.flow._remotes, {new_remote.path: new_remote})
+
+    async def test_scan_with_only_configured_remote_offers_retry(self):
+        self.flow.current_entries = [types.SimpleNamespace(
+            data={"device_address": REMOTE.address})]
+        with patch.object(self.module, "async_discover_remotes",
+                          AsyncMock(return_value=[REMOTE])):
+            result = await self.flow.async_step_bluetooth({})
+            await result["progress_task"]
+            result = await self.flow.async_step_scan()
+        self.assertEqual(result["next_step_id"], "bluetooth")
+        self.assertEqual(self.flow._bluetooth_error, "bluetooth_no_devices")
+        self.assertEqual(self.flow._remotes, {})
 
     async def test_pairing_failure_returns_to_retry(self):
         self.flow._selected_remote = REMOTE

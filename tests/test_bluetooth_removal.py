@@ -149,11 +149,15 @@ class RemovalLifecycleTest(unittest.IsolatedAsyncioTestCase):
         fake_evdev = types.SimpleNamespace(InputDevice=object, list_devices=lambda: [])
         with patch.dict(sys.modules, {"evdev": fake_evdev}), \
              patch.object(integration, "_async_get_bluetooth_device", AsyncMock(return_value=IDENTITY)), \
-             patch.object(integration, "_reader_supervisor", AsyncMock()):
+             patch.object(integration, "_reader_supervisor", AsyncMock()), \
+             patch.object(integration, "_diagnostic_supervisor", AsyncMock()):
             self.assertTrue(await integration.async_setup_entry(self.hass, self.entry))
             await self.hass.data[integration.DOMAIN][self.entry.entry_id]["task"]
         data = self.hass.config_entries.async_update_entry.call_args.kwargs["data"]
         self.assertEqual(data[integration.CONF_BLUETOOTH_DEVICE], IDENTITY)
+        state = self.hass.data[integration.DOMAIN][self.entry.entry_id]
+        self.assertEqual(REMOTE.address, state["device_address"])
+        self.assertEqual(IDENTITY, state["bluetooth_identity"])
         self.assertEqual(data["device_name"], integration.DEFAULT_DEVICE_NAME)
         self.assertNotIn("/dev/input", str(data))
 
@@ -182,10 +186,13 @@ class PairingFlowPersistenceTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_pairing_wizard_persists_addresses_only(self):
         self.flow._selected_remote = REMOTE
+        sys.modules["evdev"].InputDevice = lambda path: types.SimpleNamespace(
+            name=integration.DEFAULT_DEVICE_NAME, path=path, uniq=REMOTE.address,
+            close=lambda: None)
         with patch.object(self.module, "async_pair_remote", AsyncMock(return_value=IDENTITY)):
             await self.flow._async_pair_and_wait()
         result = await self.flow.async_step_device({
-            "device_name": integration.DEFAULT_DEVICE_NAME, "long_press_ms": 500})
+            "device_name": json.dumps([integration.DEFAULT_DEVICE_NAME, REMOTE.address]), "long_press_ms": 500})
         self.assertEqual(result["data"][integration.CONF_BLUETOOTH_DEVICE], IDENTITY)
         self.assertNotIn("hci0", str(result["data"]))
         self.assertNotIn("/dev/input", str(result["data"]))
@@ -295,6 +302,28 @@ class ConfirmUnpairTest(unittest.IsolatedAsyncioTestCase):
                 await result["progress_task"]
             await self.flow.async_step_unpair()
             self.assertEqual(self.flow._error, "bluetooth_still_in_use")
+        self.remove.assert_not_called()
+
+    async def test_other_address_with_same_name_does_not_block_unpairing(self):
+        self.flow.hass.config_entries.async_entries.return_value = [types.SimpleNamespace(data={
+            "device_name": integration.DEFAULT_DEVICE_NAME,
+            "device_address": "68:96:6A:15:BA:3F",
+        })]
+        result = await self.flow.async_step_confirm({"action": "delete"})
+        await result["progress_task"]
+        await self.flow.async_step_unpair()
+        self.remove.assert_awaited_once_with(IDENTITY)
+
+    async def test_same_reader_address_without_bluez_metadata_blocks_unpairing(self):
+        self.flow.hass.config_entries.async_entries.return_value = [types.SimpleNamespace(data={
+            "device_name": integration.DEFAULT_DEVICE_NAME,
+            "device_address": REMOTE.address.lower(),
+        })]
+        result = await self.flow.async_step_confirm({"action": "delete"})
+        with self.assertRaises(pairing.PairingError):
+            await result["progress_task"]
+        await self.flow.async_step_unpair()
+        self.assertEqual("bluetooth_still_in_use", self.flow._error)
         self.remove.assert_not_called()
 
     async def test_missing_identity_cannot_delete(self):

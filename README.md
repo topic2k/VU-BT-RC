@@ -75,11 +75,19 @@ Beim Hinzufügen der Integration gibt es zwei Wege:
 - **Bereits verbundenes Eingabegerät auswählen**, wenn die Fernbedienung schon
   mit dem Host gekoppelt ist.
 - **Bluetooth-Fernbedienung koppeln**, um sie direkt in Home Assistant zu suchen,
-  zu koppeln und zu verbinden.
+  zu koppeln und zu verbinden. Die Suche blendet bereits gekoppelte, verbundene
+  oder in der Integration eingerichtete Fernbedienungen aus.
 
 Die Fernbedienung zum Einrichten aufwecken. Danach die gewünschte Langdruck-Schwelle
 wählen; standardmäßig sind es 500 ms. In der Geräteansicht erscheinen anschließend
 die Tasten als Event-Entitäten und fünf Diagnoseanzeigen.
+
+Bei mehreren VU+ Fernbedienungen für jede einen eigenen Integrationseintrag anlegen
+und im Dropdown die passende **Bluetooth-Adresse** auswählen. Die Gerätenamen
+enthalten die Adresse; eigene Namen wie „Wohnzimmer“ und „Schlafzimmer“ sind möglich.
+Einen vorhandenen Eintrag ohne feste Zuordnung zuerst über **Neu konfigurieren**
+seiner Fernbedienung zuordnen. Bestehende Automationen bleiben dabei erhalten.
+Details stehen unter [mehrere Fernbedienungen](DOKUMENTATION.md#mehrere-fernbedienungen).
 
 ## Automationen
 
@@ -126,8 +134,8 @@ stehen in der [Automationsreferenz](DOKUMENTATION.md#automationen).
   keine Home-Assistant-Automation auslösen.
 - Bluetooth-Proxies genügen nicht, weil die Fernbedienung als lokales
   Linux-Eingabegerät verfügbar sein muss.
-- Mehrere Fernbedienungen mit demselben Linux-Gerätenamen lassen sich nicht
-  getrennt einrichten.
+- Mehrere gleichnamige Fernbedienungen benötigen unterscheidbare Bluetooth-Adressen
+  in den Linux-Eingabegeräten (`uniq`). Bei Mehrdeutigkeit wird kein Gerät ausgewählt.
 
 ## Mehr erfahren
 

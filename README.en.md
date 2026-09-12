@@ -72,11 +72,18 @@ When adding the integration, choose one of two paths:
 - **Select an already connected input device** if the remote is already paired
   with the host.
 - **Pair a Bluetooth remote** to discover, pair and connect it directly in Home
-  Assistant.
+  Assistant. Discovery hides remotes already paired, connected or configured
+  in the integration.
 
 Wake the remote during setup. Then choose a long-press threshold; the default is
 500 ms. The device page subsequently lists button event entities and five
 diagnostic indicators.
+
+For multiple VU+ remotes, create one integration entry per remote and select its
+**Bluetooth address** in the dropdown. Device names include the address; you can
+rename them to “Living room” or “Bedroom”. First use **Reconfigure** to assign an
+existing entry without a fixed identity to its remote. Existing automations are
+retained. See [multiple remotes](DOKUMENTATION.en.md#multiple-remotes) for details.
 
 ## Automations
 
@@ -123,7 +130,8 @@ for a complete example and event data.
   trigger Home Assistant automations.
 - Bluetooth proxies are insufficient because the remote must be available as a
   local Linux input device.
-- Multiple remotes with the same Linux device name cannot be set up separately.
+- Multiple remotes with identical names require distinct Bluetooth addresses in
+  their Linux input devices (`uniq`). Ambiguous matches do not select a device.
 
 ## Learn more
 

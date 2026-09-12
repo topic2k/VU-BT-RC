@@ -3,9 +3,9 @@
     "step": {
       "device": {
         "title": "VU+ Bluetooth remote",
-        "description": "Select the connected Linux input device. If it is missing, wake the remote and submit the form again to refresh the list. After deleting the integration entry, you can decide under Repairs whether to also remove the Bluetooth pairing.",
+        "description": "Select the connected Linux input device by its Bluetooth address. Each remote gets its own entry. Wake missing remotes and refresh the list. After deleting an entry, you can decide under Repairs whether to also remove the pairing.",
         "data": {
-          "device_name": "Linux device name",
+          "device_name": "Linux input device / Bluetooth address",
           "long_press_ms": "Long-press threshold (ms)"
         }
       },
@@ -19,29 +19,37 @@
       },
       "bluetooth": {
         "title": "Pair a Bluetooth remote",
-        "description": "Put the VU+ remote into pairing mode as described in its manual and start discovery (about 10 seconds). A powered local Bluetooth adapter is required; Bluetooth proxies are not supported. After selection, the remote will be paired, permanently trusted and connected. When you later delete the integration entry, the pairing is retained until you explicitly confirm removal under Repairs."
+        "description": "Remotes already paired, connected or configured in this integration are hidden. Put the VU+ remote into pairing mode as described in its manual and start discovery (about 10 seconds). A powered local Bluetooth adapter is required; Bluetooth proxies are not supported. After selection, the remote will be paired, permanently trusted and connected. When you later delete the integration entry, the pairing is retained until you explicitly confirm removal under Repairs."
       },
       "select_remote": {
         "title": "Select a remote",
-        "description": "Check the Bluetooth address and adapter. Submitting will pair, trust and connect this remote. Keep it awake. Existing pairings are reused. When you later delete the integration entry, the pairing is retained until you explicitly confirm removal under Repairs.",
+        "description": "Check the Bluetooth address and adapter. Submitting will pair, trust and connect this remote. Keep it awake. Remotes already paired, connected or configured in this integration are hidden. When you later delete the integration entry, the pairing is retained until you explicitly confirm removal under Repairs.",
         "data": {
           "remote": "VU+ remote"
         }
       },
       "device_missing": {
         "title": "Waiting for an input device",
-        "description": "Linux has not provided a readable input device yet. Wake the connected remote. Submit this form to reload the device list. If no device appears, check Home Assistant access to /dev/input."
+        "description": "No uniquely selectable input device is available yet. Wake the remote and submit this form again. If needed, check access to /dev/input and the Bluetooth address in evdev uniq. After pairing, only the selected remote is offered."
+      },
+      "reconfigure": {
+        "title": "Identify the remote",
+        "description": "Assign a legacy entry without a fixed address to the intended remote. Existing entities and automations are retained. A remote already bound to an address cannot be replaced with another here.",
+        "data": {
+          "device_name": "Linux input device / Bluetooth address",
+          "long_press_ms": "Long-press threshold (ms)"
+        }
       }
     },
     "error": {
-      "device_not_found": "The input device was not found.",
+      "device_not_found": "The selected input device could not be uniquely identified. Wake the remote and refresh the list. Devices with identical names require distinct Bluetooth addresses in evdev uniq.",
       "evdev_missing": "python-evdev is not available.",
       "unknown": "Unknown error.",
       "bluetooth_unavailable": "BlueZ or the system D-Bus is unavailable. Check Bluetooth and D-Bus access on the Home Assistant host.",
       "bluetooth_permission": "Bluetooth access is not permitted. Check the D-Bus permissions of the Home Assistant process.",
       "bluetooth_no_adapter": "No local Bluetooth adapter was found. A Bluetooth proxy cannot provide evdev input.",
       "bluetooth_adapter_off": "The local Bluetooth adapter is switched off or not ready. Enable it and try again.",
-      "bluetooth_no_devices": "No VUPLUS-BLE-RCU was found. Put the remote into pairing mode and try again.",
+      "bluetooth_no_devices": "No new VUPLUS-BLE-RCU was found. Already paired, connected or configured remotes are hidden. Put the new remote into pairing mode and try again. For an already paired remote, use \"Select an already connected input device\".",
       "bluetooth_device_gone": "The selected remote is no longer available. Start discovery again.",
       "bluetooth_timeout": "Bluetooth access timed out. Wake the remote or enable pairing mode again and retry.",
       "bluetooth_authentication": "Pairing was rejected or failed. Enable pairing mode and try again.",
@@ -49,7 +57,9 @@
       "bluetooth_failed": "Bluetooth setup failed. Check the Home Assistant log and try again. Any pairing already completed is retained."
     },
     "abort": {
-      "already_configured": "This remote is already configured."
+      "already_configured": "This remote is already configured.",
+      "legacy_entry_needs_address": "An entry with this device name already exists without a fixed address. Open Reconfigure for that entry and select its remote first. Then add the second remote.",
+      "reconfigure_successful": "The remote has been assigned and the integration reloaded."
     },
     "progress": {
       "scan": "Searching for local VU+ remotes …",
@@ -98,6 +108,9 @@
   "device": {
     "remote": {
       "name": "VU+ Bluetooth remote"
+    },
+    "remote_with_address": {
+      "name": "VU+ Bluetooth remote ({address})"
     }
   },
   "selector": {

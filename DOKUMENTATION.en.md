@@ -12,6 +12,7 @@
 - [Device information](#device-information)
 - [Diagnostic entities](#diagnostic-entities)
 - [Setup](#setup)
+- [Multiple remotes](#multiple-remotes)
 - [Bluetooth pairing](#bluetooth-pairing)
 - [Unpairing after deletion](#unpairing-after-deletion)
 - [Events](#events)
@@ -103,7 +104,7 @@ No entry in `configuration.yaml` is required.
 - Configuration through **Settings → Devices & services**.
 - Optional remote discovery, pairing, trusting and connection in the config flow.
 - Separate confirmation before unpairing after deleting the integration entry.
-- Remote selection by Linux device name; the dropdown also shows its current path.
+- Remote selection by Linux device name and Bluetooth address; the dropdown also shows its current path.
 - Home Assistant device registry entry for the remote.
 - Diagnostic entities for pairing, connection and reader status.
 - A separate event entity for each supported button.
@@ -127,8 +128,8 @@ The device page contains five enabled diagnostic binary sensors:
 
 - **Paired**, **Bluetooth connected** and **Trusted** report the corresponding
   states of the associated BlueZ remote.
-- **Input device available** indicates whether an evdev device with the
-  configured Linux name is currently present.
+- **Input device available** indicates whether an evdev device uniquely matching the
+  configured name and stored address is currently present.
 - **Reading input** indicates whether the evdev reader has opened the device.
 
 Bluetooth states are refreshed on load and every 30 seconds. If the Bluetooth
@@ -140,14 +141,51 @@ unavailable instead of reporting a misleading off state.
 Add the integration through the UI. Choose **Select an already connected input
 device** or **Pair a Bluetooth remote**.
 
-Button detection stores the Linux device name, normally `VUPLUS-BLE-RCU Keyboard`;
-it never stores `/dev/input/eventX`. When uniquely identified, the Bluetooth
-addresses of the remote and local adapter are also stored for later unpairing.
+Button detection stores the Linux device name, normally `VUPLUS-BLE-RCU Keyboard`,
+and the Bluetooth address from evdev `uniq`; it never stores `/dev/input/eventX`.
+When uniquely identified, the local adapter address is also stored for diagnostics
+and later unpairing.
 Keep the remote awake and connected during setup so Linux exposes its evdev
 device and it appears in the dropdown.
 
 The default long-press threshold is **500 ms**. Set it during setup or later in
 the integration options, from **100 to 5000 ms** in **50 ms** increments.
+
+## Multiple remotes
+
+Each remote gets its own integration entry with separate button event entities
+and diagnostic indicators. The dropdown lists identically named devices separately
+with their Bluetooth addresses. Select the matching address and
+`VUPLUS-BLE-RCU Keyboard` for each remote. Translated device names include the
+address; you can rename them afterwards. Select the corresponding remote device
+in the blueprint for each automation.
+
+**Retain an existing entry:** A previously stored Bluetooth identity is reused
+as the fixed reader address. Otherwise, a uniquely found single device is bound
+to its address when available. If multiple identically named devices are present,
+a reader without a fixed identity remains inactive. Open **Reconfigure** in the
+existing entry's menu under **Settings → Devices & services → VU+ HID Raw Remote**
+and select its remote by address. Device and entity identifiers and existing
+automations are retained. Then use **Add entry** to set up the second remote.
+While an unassigned entry with the same name exists, setup blocks adding another
+entry to prevent reading the same remote twice. **Reconfigure** cannot replace
+a remote already bound to an address with a different remote.
+
+The fixed address comes from evdev `uniq`, independently of BlueZ access.
+The `phys` field is only used to additionally identify the local Bluetooth adapter.
+Check on the Linux host while both remotes are connected:
+
+```sh
+grep -A 7 -B 1 'Name="VUPLUS-BLE-RCU Keyboard"' /proc/bus/input/devices
+```
+
+The `U: Uniq=` lines should contain the different Bluetooth addresses. Without
+`uniq`, a single uniquely named input device remains usable; multiple devices
+with the same name and no distinct address are not offered. A user-supplied host listing on
+2026-09-12 confirmed two identically named Keyboard devices with different Bluetooth
+addresses in `uniq` and the same adapter in `phys`. These metadata are also simulated
+in a test. The feature has been verified locally with simulated evdev devices;
+actual parallel operation and reconnects with two remotes on HA OS remain untested.
 
 ## Bluetooth pairing
 
@@ -158,7 +196,10 @@ dialog for HID remotes. This integration supplies an optional pairing flow:
    according to its manual.
 2. Start discovery. It takes about ten seconds and uses powered local Bluetooth
    adapters. Devices named `VUPLUS-BLE-RCU` are offered, optionally with a suffix
-   separated by whitespace.
+   separated by whitespace. Already paired, bonded or connected devices are
+   hidden by Bluetooth address across all local adapters, as are addresses
+   already configured in the integration. Sleeping paired remotes are therefore
+   not offered again.
 3. Select the remote by its Bluetooth address and adapter. Submitting pairs it
    (`Pair`), marks it trusted (`Trusted = true`) and connects it (`Connect`).
 4. Select `VUPLUS-BLE-RCU Keyboard` and the long-press threshold. If Linux has not
@@ -177,7 +218,14 @@ expose the HID device locally through evdev. Pairing without PIN entry (Just Wor
 is supported. If a PIN or numeric comparison is required, the dialog reports it;
 complete that pairing with `bluetoothctl` instead.
 
-Existing pairings are reused. Pairing and trust remain in BlueZ after a later
+For already paired remotes, use **Select an already connected input device**
+and wake the remote. Discovery keeps no history of deleted pairings: after
+removing both the pairing and the integration entry, a remote can be offered
+again. The filter was verified locally with simulated BlueZ devices and config
+entries. The user confirmed successful filtering in a hardware test on
+2026-09-12; this does not confirm the other outstanding hardware tests.
+
+Pairing and trust remain in BlueZ after a later
 error or cancellation of setup. Deleting a completed integration entry initially
 retains the pairing; removing it requires separate confirmation as described
 below. Cancelling stops an ongoing pairing attempt and releases the temporary
@@ -185,8 +233,9 @@ pairing agent and discovery sessions owned by this integration.
 
 The integration does not replace the global Bluetooth agent or change adapter
 settings. Bluetooth addresses are stored for unpairing; BlueZ device paths,
-`hciX` numbers and evdev paths are not stored. The reader searches only by Linux
-device name.
+`hciX` numbers and evdev paths are not stored. The reader checks the Linux device
+name and stored Bluetooth address. After pairing, input selection only offers
+the selected remote.
 
 ## Unpairing after deletion
 
@@ -218,8 +267,10 @@ For manually paired remotes or entries without this identity, the integration
 tries to resolve it uniquely using optional evdev `uniq` and `phys` metadata and
 BlueZ devices. This happens during setup, when loading an entry without identity,
 and if necessary during deletion. If identity is missing, wake the remote and
-reload the integration so it can be saved. Reader discovery and reconnection
-continue to use only the Linux device name.
+reload the integration so it can be saved. Stored remote addresses restrict
+evdev lookup to the matching interface. Another entry with a different fixed
+address does not block confirmed unpairing; an unassigned entry with the same
+name still protects the bond from uncertain removal.
 
 If identity or the original adapter is missing, or confirmed unpairing fails,
 the prompt remains open and explains why. The selection resets to **keep pairing**.
@@ -556,7 +607,9 @@ repeat. Long presses are determined from actual duration.
 
 ## Reconnection
 
-The reader searches by Linux device name. After disconnection it searches again
+The reader searches by Linux device name and the stored Bluetooth address from
+`uniq`. If that remote is missing, it never reads another identically named device.
+After disconnection it searches again
 every two seconds, so changing `/dev/input/eventX` paths are supported.
 `MSC_SCAN` is associated only with the next key event and discarded on reconnection.
 
@@ -596,8 +649,10 @@ are described in the [remote guide](VU_BT_FERNBEDIENUNG_TASTENKOMBINATIONEN.en.m
 - `TV Power` and `AV` do not produce events through the Linux HID/evdev interface
   used here and cannot be automation triggers.
 - Bluetooth proxies cannot replace a local evdev device.
-- Multiple remotes with identical Linux device names cannot be configured
-  separately; device selection and discovery distinguish them only by name.
+- Multiple identically named remotes require distinct Bluetooth addresses in
+  evdev `uniq`. Missing or duplicate identities cannot be distinguished reliably.
+  Operation with two physical remotes is not yet confirmed; identity matching and
+  separate event delivery have been verified with simulated evdev devices.
 - Installation through HACS, adding the integration, Bluetooth pairing and
   explicitly confirmed unpairing have been tested with the remote. Automated
   tests still simulate Home Assistant and the BlueZ transport; buttons, long
